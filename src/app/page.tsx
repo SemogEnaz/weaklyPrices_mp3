@@ -1,10 +1,14 @@
-import NavLinks from "@/ui/home_page/nav-links"
+import Link from 'next/link';
 
 export default function Page() {
   return (
 
     <h1 className="text-3xl text-white text-center">
-      Hello. Put navigation page here.
+      <button className="bg-violet-600 hover:bg-violet-900">
+        <Link href="/weaklyPrices">
+          weaklyPrices
+        </Link>
+      </button>
     </h1>
 
   );

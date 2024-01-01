@@ -1,4 +1,4 @@
-import Summary from '@/ui/weaklyPrices/summary'
+import '@/app/weaklyPrices/weaklyPrices.css'
 import fs from 'node:fs';
 import Card from '@/app/weaklyPrices/card'
 
@@ -65,23 +65,16 @@ export default function Page() {
     console.log(colesCatalogue);
 
     return (
-        // This is the container for the catalogue summaries
-        <div className='
-        w-full p-20 
-        flex flex-col md:flex-row
-        items-center'>
-
-            <Card 
-                title={"BabyCo"}
-                catalogue={colesCatalogue}
-            />
-
+        <div className='cardDisplay'>
             <Card 
                 title={"PetsCo"}
                 catalogue={Other}
             />
-
+            <Card 
+                title={"BabyCo"}
+                catalogue={colesCatalogue}
+            />
         </div>
-    
-    );
+      );
+      
 }
