@@ -13,19 +13,19 @@ export default function Card({ title, catalogue }) {
         <div className="table">
 
             <div className='heading'>
-                <p className='w-3/4 pr-8'>Items</p>
-                <p className='w-1/4 pl-8'>Prices</p>
+                <p className='name'>Items</p>
+                <p className='price'>Prices</p>
             </div>
 
             {catalogue.map((item, index) => (
                 <div key={index} className='flex'>
 
                     <div className='name'>
-                        <p className='pr-8'>{item.name}</p>
+                        {item.name}
                     </div>
 
                     <div className='price'>
-                        <p className='pl-8'>${item.old_price}</p>
+                        ${item.old_price}
                     </div>
 
                 </div>

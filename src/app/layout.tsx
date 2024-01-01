@@ -1,7 +1,12 @@
 import { Inter } from 'next/font/google'
-import './globals.css'
+import { Tinos } from 'next/font/google'
 
 const inter = Inter({ subsets: ['latin'] })
+
+const tinos = Tinos({
+  weight: '400',
+  subsets: ['latin'],
+})
 
 export default function RootLayout({
   children,

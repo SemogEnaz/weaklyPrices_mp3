@@ -9,82 +9,85 @@
 
         flex flex-col items-center
 
-        lg:flex-row
-        lg:justify-center
-        lg:items-start
+        xl:flex-row
+        xl:justify-center
+        xl:items-start
     }
 
     .card {
         @apply 
-            m-8 
             flex flex-col items-center
+
+            md:m-8
     }
 
-    .card .title {
+    .title {
         @apply
-            font-bold text-9xl lg:text-9xl
+            font-bold text-[90px]
+            
+            md:p-4
+            md:text-9xl
+    }
+
+    .table {
+        @apply 
+            border-2 
+            w-[350px]
             p-4
+
+            md:p-8
+            md:w-[600px]
+            md:min-w-[600px]
     }
 
-    .card .table {
-        @apply 
-            border-2 p-8 
-            w-[600px] min-w-[600px]
-    }
-
-    .name, .price{
+    .name, .price, .heading {
         @apply
-            text-lg
+            flex justify-center
+    }
+
+    .name, .price {
+        @apply
             p-1
+
+            md:p-1.5
     }
 
-    .card .table .name {
+    .heading {
+        @apply
+            text-center 
+            font-bold
+        
+            pb-2 
+    }
+
+    .heading * {
+        @apply
+            text-xl
+
+            md:text-xl
+    }
+
+    .heading .name {
+        @apply
+            border-r-2 border-black
+    }
+
+    .name {
         @apply 
-            flex items-center justify-center 
+            text-center
             w-3/4 border-r-2 border-white
-            text-center 
+            pr-2
+
+            md:pr-6
     }
 
-    .card .table .price {
+    .price {
         @apply 
-            flex flex-row justify-center items-center
+            flex-row items-center
             w-1/4 
-            text-center 
-    }
+            text-center
+            pl-5
 
-    .card .table .heading {
-        @apply
-            flex text-center 
-            font-bold text-2xl
-            pb-7
+            md:pl-8
     }
 }
-
-/* Mobile CSS */
-/*
-@media (max-width: 768px){
-    .cardDisplay {
-    @apply text-center bg-blue-500 text-white p-4 rounded;
-    }
-
-    .card {
-        @apply
-    }
-
-    .card .title {
-        @apply
-    }
-
-    .card .elements {
-        @apply
-    }
-
-    .card .elements .name {
-        @apply
-    }
-
-    .card .elements .price {
-        @apply
-    }
-}
-*/

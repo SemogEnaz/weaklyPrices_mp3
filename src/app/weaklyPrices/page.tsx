@@ -1,4 +1,5 @@
 import '@/app/weaklyPrices/weaklyPrices.css'
+
 import fs from 'node:fs';
 import Card from '@/app/weaklyPrices/card'
 
@@ -67,11 +68,11 @@ export default function Page() {
     return (
         <div className='cardDisplay'>
             <Card 
-                title={"PetsCo"}
+                title={"Coles"}
                 catalogue={Other}
             />
             <Card 
-                title={"BabyCo"}
+                title={"Woolies"}
                 catalogue={colesCatalogue}
             />
         </div>
