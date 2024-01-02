@@ -1,7 +1,9 @@
 import '@/app/weaklyPrices/weaklyPrices.css'
 
 import fs from 'node:fs';
+
 import Card from '@/app/weaklyPrices/card'
+import { TopButton } from '@/ui/button';
 
 // TODO: Move all the file stuff to the backend api for this pages GET
 
@@ -60,22 +62,25 @@ function readWoolSummary() {
 
 export default function Page() {
 
-    const colesCatalogue = readColesSummary('Baby.csv');
+    const colesCatalogue = readColesSummary('top.csv');
     const Other = readColesSummary('Pet.csv');
 
-    console.log(colesCatalogue);
-
     return (
-        <div className='cardDisplay'>
-            <Card 
-                title={"Coles"}
-                catalogue={Other}
-            />
-            <Card 
-                title={"Woolies"}
-                catalogue={colesCatalogue}
-            />
+        <div className='flex flex-col items-center'>
+            <TopButton link={"/"} text={'Home'}/>
+
+            <div className='cardDisplay'>
+                <Card 
+                    title={"Coles"}
+                    catalogue={colesCatalogue}
+                />
+                <Card 
+                    title={"Woolies"}
+                    catalogue={Other}
+                />
+            </div>
         </div>
+        
       );
       
 }
