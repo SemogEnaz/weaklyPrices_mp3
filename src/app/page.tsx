@@ -1,15 +1,21 @@
 import Link from 'next/link';
 
+import { Button } from '@/ui/button';
+
 export default function Page() {
   return (
+    <div className='h-[100vh] flex flex-col items-center justify-around'>
 
-    <h1 className="text-3xl text-white text-center">
-      <button className="bg-violet-600 hover:bg-violet-900">
-        <Link href="/weaklyPrices">
-          weaklyPrices
-        </Link>
-      </button>
-    </h1>
-
+      <div className='flex flex-col items-center'>
+        <h2>Applications</h2>
+        <Button link={'/weaklyPrices'} text={"Weakly Prices"}/>
+        <Button link={'/mp3'} text={'Youtube Video Downloader'}/>
+      </div>
+      
+      <div className='flex flex-col items-center'>
+        <h2>Blogs</h2>
+      </div>
+      
+    </div>
   );
 }
