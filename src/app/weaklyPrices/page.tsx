@@ -1,83 +1,101 @@
-import '@/app/weaklyPrices/weaklyPrices.css'
+import '@/app/weaklyPrices/weaklyPrices.css';
 
-import fs from 'node:fs';
+import { Poppins } from 'next/font/google';
+import { Open_Sans } from 'next/font/google';
 
 import Card from '@/app/weaklyPrices/card'
-import { TopButton } from '@/ui/button';
+import { Button, TopButton } from '@/ui/button';
+import CatalogueReader, { Item } from '@/app/weaklyPrices/catalogueReader';
 
-// TODO: Move all the file stuff to the backend api for this pages GET
+const poppins = Poppins({
+    weight: '500',
+    subsets: ['latin'],
+});
 
-//import { }
+const openSans = Open_Sans({
+    weight: '300',
+    subsets: ['latin'],
+});
 
-interface Item {
-    name: string;
-    old_price: string;
-    new_price: string;
+function readItems(fileName: string) {
+    const reader = new CatalogueReader(fileName);
+    return reader.readColesSummary();
 }
 
-function readColesSummary(fileName: string): Item[] {
+function getTopDrops(fileName: string, itemCount: number): Item[] {
+    let items = readItems(fileName);
 
-    const dir = './src/scripts/weaklyPrices/coles_catalogue/';
-    const filePath = dir + fileName;
-    console.log(`Attempting to read from ${filePath}`);
-
-    try {
-        const data = fs.readFileSync(filePath, 'utf8');
-        return parseData(data);
-    } catch (err) {
-        console.error(err);
-    }
-    return [];
+    let sortedItmes = items.sort((a: Item, b: Item) => {
+        return (b.oldPrice - b.newPrice) - (a.oldPrice - a.newPrice)
+    });
+    
+    return sortedItmes.slice(0, itemCount);
 }
 
-function parseData(data: string): Item[] {
+function getCuratedColes() {
+    const catagories = [
+        "Frozen",
+        'Healthy Living',
+        'Meat, Seafood & Deli',
+        'Household'
+    ];
 
-    let items = [];
+    let items: Item[] = [];
 
-    let lines = data.split('\r\n');
+    for (const catagory of catagories) {
 
-    for (let line of lines) {
-
-        let substrings = line.split(',');
-
-        const item: Item = {
-            name: substrings[0],
-            old_price: substrings[1],
-            new_price: substrings[2]
-        };
-
-        items.push(item);
+        let drops = getTopDrops(catagory, 2);
+        items.push(...drops);
     }
-
-    // Removing elements
-    items.splice(0, 1)                  // First element, headings
-    items.splice(items.length - 1, 1)   // Last element, empty
 
     return items;
 }
 
-function readWoolSummary() {
+function getCuratedWoolies() {
 
 }
 
 export default function Page() {
 
-    const colesCatalogue = readColesSummary('top.csv');
-    const Other = readColesSummary('Pet.csv');
+    const colesCatalogue = getCuratedColes();
+    const wooliesCatalogue = readItems('Pet');
+
+    const colesColor = 'text-[#ed1c22]';
+    const wooliesColor = 'text-[#60AB31]';
+    // Another green is #099950
 
     return (
-        <div className='flex flex-col items-center'>
+        <div className='col-center'>
+
             <TopButton link={"/"} text={'Home'}/>
 
             <div className='cardDisplay'>
-                <Card 
-                    title={"Coles"}
-                    catalogue={colesCatalogue}
-                />
-                <Card 
-                    title={"Woolies"}
-                    catalogue={Other}
-                />
+
+                <div className='col-center'>
+                    <Card 
+                        title={"coles"} 
+                        catalogue={colesCatalogue}
+                        titleClasses={`
+                            ${poppins.className} 
+                            ${colesColor}
+                        `}
+                    />
+                    <Button link={'/weaklyPrices/details/coles'} text={'View More'}/>
+                </div>
+
+                <div className='col-center'>
+                    <Card
+                        title={"Woolies"}
+                        catalogue={wooliesCatalogue}
+                        titleClasses={`
+                            ${openSans.className}
+                            ${wooliesColor}
+                            ${'tracking-[-0.09em]'}
+                        `}
+                    />
+                    <Button link={'/weaklyPrices/details/woolies'} text={'View More'}/>
+                </div>
+                
             </div>
         </div>
         
