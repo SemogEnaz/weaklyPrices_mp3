@@ -13,7 +13,7 @@ export default class CatalogueReader {
         this.fileName = '';
     }
 
-    readSummary(dir: string, fileName: string): Item[] {
+    readCsv(dir: string, fileName: string): Item[] {
 
         const extension = '.csv'
         const filePath = dir + this.fileName + extension;

@@ -67,7 +67,7 @@ const openSans = Open_Sans({
 
 function readItems(fileName: string) {
     const reader = new CatalogueReader();
-    return reader.readSummary('/src/scripts/coles_catalogue/', fileName);
+    return reader.readCsv('/src/scripts/coles_catalogue/', fileName);
 }
 
 function getCuratedColes(itemsPerCatagory: number) {
@@ -96,7 +96,7 @@ function getCuratedCatalogue(catagories: string[], dir: string, itemsPerCatagory
 
     for (const catagory of catagories) {
 
-        const items = reader.readSummary(dir, catagory);
+        const items = reader.readCsv(dir, catagory);
 
         const drops = reader.getTopDrops(items, itemsPerCatagory);
 
