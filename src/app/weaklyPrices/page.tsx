@@ -7,57 +7,9 @@ import Card from '@/app/weaklyPrices/card'
 import { Button, TopButton } from '@/ui/button';
 import CatalogueReader, { Item } from '@/app/weaklyPrices/catalogueReader';
 
-const poppins = Poppins({
-    weight: '500',
-    subsets: ['latin'],
-});
-
-const openSans = Open_Sans({
-    weight: '300',
-    subsets: ['latin'],
-});
-
-function readItems(fileName: string) {
-    const reader = new CatalogueReader(fileName);
-    return reader.readColesSummary();
-}
-
-function getTopDrops(fileName: string, itemCount: number): Item[] {
-    let items = readItems(fileName);
-
-    let sortedItmes = items.sort((a: Item, b: Item) => {
-        return (b.oldPrice - b.newPrice) - (a.oldPrice - a.newPrice)
-    });
-    
-    return sortedItmes.slice(0, itemCount);
-}
-
-function getCuratedColes() {
-    const catagories = [
-        "Frozen",
-        'Healthy Living',
-        'Meat, Seafood & Deli',
-        'Household'
-    ];
-
-    let items: Item[] = [];
-
-    for (const catagory of catagories) {
-
-        let drops = getTopDrops(catagory, 2);
-        items.push(...drops);
-    }
-
-    return items;
-}
-
-function getCuratedWoolies() {
-
-}
-
 export default function Page() {
 
-    const colesCatalogue = getCuratedColes();
+    const colesCatalogue = getCuratedColes(2);
     const wooliesCatalogue = readItems('Pet');
 
     const colesColor = 'text-[#ed1c22]';
@@ -101,4 +53,55 @@ export default function Page() {
         
       );
       
+}
+
+const poppins = Poppins({
+    weight: '500',
+    subsets: ['latin'],
+});
+
+const openSans = Open_Sans({
+    weight: '300',
+    subsets: ['latin'],
+});
+
+function readItems(fileName: string) {
+    const reader = new CatalogueReader();
+    return reader.readSummary('/src/scripts/coles_catalogue/', fileName);
+}
+
+function getCuratedColes(itemsPerCatagory: number) {
+
+    const catagories = [
+        "Frozen",
+        'Healthy Living',
+        'Meat, Seafood & Deli',
+        'Household'
+    ];
+
+    const dir = '/src/scripts/coles_catalogue/';
+
+    return getCuratedCatalogue(catagories, dir, itemsPerCatagory);
+}
+
+function getCuratedWoolies() {
+
+}
+
+function getCuratedCatalogue(catagories: string[], dir: string, itemsPerCatagory: number) {
+    
+    let allItems: Item[] = [];
+
+    const reader = new CatalogueReader();
+
+    for (const catagory of catagories) {
+
+        const items = reader.readSummary(dir, catagory);
+
+        const drops = reader.getTopDrops(items, itemsPerCatagory);
+
+        allItems.push(...drops);
+    }
+
+    return allItems;
 }

@@ -9,14 +9,14 @@ export type Item = {
 export default class CatalogueReader {
     fileName: string;
 
-    constructor(fileName: string) {
-        this.fileName = fileName + '.csv';
+    constructor() {
+        this.fileName = '';
     }
 
-    readColesSummary(): Item[] {
+    readSummary(dir: string, fileName: string): Item[] {
 
-        const dir = './src/scripts/weaklyPrices/coles_catalogue/';
-        const filePath = dir + this.fileName;
+        const extension = '.csv'
+        const filePath = dir + this.fileName + extension;
         console.log(`Attempting to read from ${filePath}`);
     
         try {
@@ -52,5 +52,14 @@ export default class CatalogueReader {
         items.splice(items.length - 1, 1)   // Last element, empty
     
         return items;
+    }
+
+    getTopDrops(items: Item[], itemCount: number): Item[] {
+    
+        let sortedItmes = items.sort((a: Item, b: Item) => {
+            return (b.oldPrice - b.newPrice) - (a.oldPrice - a.newPrice)
+        });
+        
+        return sortedItmes.slice(0, itemCount);
     }
 }
