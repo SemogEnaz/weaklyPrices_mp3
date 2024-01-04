@@ -31,7 +31,7 @@ function getDateStr(dateObj: Date): string {
     return `${dateObj.getDate()}/${dateObj.getMonth()+1}`;
 }
 
-export default function Card({ title, catalogue }) {
+export default function Card({ title, catalogue, titleClasses }) {
 
     const validThru = getValidDates();
 
@@ -40,8 +40,13 @@ export default function Card({ title, catalogue }) {
 
         {/* Headings */}
         <div className='title'>
-            <h2>{title}</h2>
-            <p>{validThru} (Every Monday)</p>
+
+            <h2 className={`brand ${titleClasses}`}>
+                {title}
+            </h2>
+
+            {/* The className can be set to company color from the prop */}
+            <p className='validDates'>{validThru} (Every <span className={''}>Monday</span>)</p>
         </div>
 
         {/* Item tables */}
@@ -61,8 +66,8 @@ export default function Card({ title, catalogue }) {
                     </div>
 
                     <div className='price'>
-                            <p className='text-gray-400'>${item.old_price}</p> 
-                            &nbsp;${item.new_price}
+                            <p className='text-gray-400'>${item.oldPrice}</p> 
+                            &nbsp;${item.newPrice}
                     </div>
 
                 </div>
