@@ -263,8 +263,8 @@ def get_woolworths_catalogue():
     half_price_link = 'https://www.woolworths.com.au/shop/browse/specials/half-price'
 
     links = [
-        half_price_link,
         specials_link,
+        half_price_link,
     ]
 
     # Pre scrapin setup, goes through each link/catagory
@@ -341,49 +341,47 @@ def get_woolworths_catalogue():
             item_elements = shadow_driver.find_elements(
                 'div.ng-tns-c106-3.product-grid-v2--tile.ng-star-inserted')
 
+
             # Scrpaing specific items from current page
             for item_element in item_elements:
 
                 try:
+                    element_name = shadow_driver.find_element(
+                        item_element, 
+                        'section>div.product-title-container>div.title>a'
+                    )
+
+                    element_link = shadow_driver.find_element(
+                        item_element, 
+                        'section>div.product-title-container>div.title>a'
+                    )
+
+                    # Specials old price element
                     try:
-                        element_name = shadow_driver.find_element(
+                        element_old_price = shadow_driver.find_element(
                             item_element, 
-                            'div.product-title-container>div.title>a'
+                            'div.product-tile-promo-info>div.html-content>span'
+                        )
+                    # Half price old price element
+                    except:
+                        element_old_price = shadow_driver.find_element(
+                            item_element, 
+                            'section>div.product-information-container>div>div>div.secondary>span.was-price'
                         )
 
-                        element_link = shadow_driver.find_element(
-                            item_element, 
-                            'div.product-title-container>div.title>a'
-                        )
+                    element_new_price = shadow_driver.find_element(
+                        item_element, 
+                        'section>div.product-information-container>div>div>div.primary'
+                    )
 
-                        # Specials old price element
-                        try:
-                            element_old_price = shadow_driver.find_element(
-                                item_element, 
-                                'div.product-tile-promo-info>div.html-content>span'
-                            )
-                        # Half price old price element
-                        except:
-                            element_old_price = shadow_driver.find_element(
-                                item_element, 
-                                'div.product-tile-price.div.secondary>span.was-price'
-                            )
-
-                        element_new_price = shadow_driver.find_element(
-                            item_element, 
-                            'div.product-tile-price>div.primary'
-                        )
-
-                    except StaleElementReferenceException:
-                        print('Could not get item attribute webElements')
-
-                except JavascriptException: continue
+                except JavascriptException: 
+                    continue
 
                 item_new_price = parse_price(element_new_price.text)
 
                 item_old_price = element_old_price.text
                 # Some price drops do not clearly state how much they were
-                if (item_old_price.find('$')):
+                if (item_old_price.find('$') != -1):
                     item_old_price = parse_price(item_old_price)
                     item_old_price = item_old_price[:item_old_price.find(' ')]
                 else:
