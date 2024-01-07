@@ -1,35 +1,58 @@
-import CatalogueReader from '@/app/weaklyPrices/catalogueReader'
-import Card from '@/app/weaklyPrices/card'
-import { HomeButton } from '@/ui/button';
+import CatalogueReader, { Item } from '@/app/weaklyPrices/catalogueReader'
+import Display from '../display'
 
 export default function Page() {
-    const items = new CatalogueReader('top.csv').readColesSummary()
+    const catalogue = getCatalogueSummary(5);
 
-    return (
-        <div className='col-center'>
-            <HomeButton />
-        </div>
-    );
+    return <Display catalogue={catalogue} />
+}
+
+function getCatalogueSummary(itemsPerCatagory: number): 
+    { id: number, name:string, items:Item[]; }[] {
+
+    let catalogue = [];
+    let id = 0;
+
+    const catagories = getCatagories();
+    const reader = new CatalogueReader();
+    const dir = 'src/scripts/weaklyPrices/coles_catalogue/';
+
+    for (const catagory of catagories) {
+
+        let items = reader.readCsv(dir, catagory);
+
+        items = reader.getTopDrops(items, itemsPerCatagory);
+
+        let card = {
+            id: id,
+            name: catagory,
+            items: items
+        }
+
+        catalogue.push(card);
+
+        id++;
+    }
+
+    return catalogue;
 }
 
 function getCatagories() {
     return [
-        'All',
-        'Baby',
-        'Bread & Bakery',
-        'Cloathing',
-        'Dairy, Eggs & Meals',
-        'Drinks',
         'Frozen',
-        'Fruit & Vegetables',
-        'Half Price Specials',
-        'Health & Beauty',
-        'Healthy Living',
-        'Household',
-        'Liquor',
-        'Meat, Seafood & Deli',
         'Pantry',
+        'Meat, Seafood',
+        'Fruit & Vegetables',
+        'Dairy, Eggs & Fridge',
+        'Deli',
+        'Bakery',
+        'Drinks',
+        'Health & Beauty',
+        'Baby',
+        'Bonus BBQ Credits',
+        'Back to School',
+        'Household',
         'Pet',
-        'Stationery & Media',
+        'Liquor',
     ]
 }

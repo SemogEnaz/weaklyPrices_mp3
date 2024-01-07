@@ -10,7 +10,7 @@ import CatalogueReader, { Item } from '@/app/weaklyPrices/catalogueReader';
 export default function Page() {
 
     const colesCatalogue = getCuratedColes(2);
-    const wooliesCatalogue = readItems('Pet');
+    const wooliesCatalogue = getCuratedWoolies(4);
 
     const colesColor = 'text-[#ed1c22]';
     const wooliesColor = 'text-[#60AB31]';
@@ -30,7 +30,9 @@ export default function Page() {
                         titleClasses={`
                             ${poppins.className} 
                             ${colesColor}
+                            ${'brand'}
                         `}
+                        addValidDates={true}
                     />
                     <Button link={'/weaklyPrices/details/coles'} text={'View More'}/>
                 </div>
@@ -43,7 +45,9 @@ export default function Page() {
                             ${openSans.className}
                             ${wooliesColor}
                             ${'tracking-[-0.09em]'}
+                            ${'brand'}
                         `}
+                        addValidDates={true}
                     />
                     <Button link={'/weaklyPrices/details/woolies'} text={'View More'}/>
                 </div>
@@ -65,27 +69,31 @@ const openSans = Open_Sans({
     subsets: ['latin'],
 });
 
-function readItems(fileName: string) {
-    const reader = new CatalogueReader();
-    return reader.readCsv('/src/scripts/coles_catalogue/', fileName);
-}
-
 function getCuratedColes(itemsPerCatagory: number) {
 
     const catagories = [
         "Frozen",
-        'Healthy Living',
-        'Meat, Seafood & Deli',
-        'Household'
+        'Dairy, Eggs & Fridge',
+        'Pantry',
+        'Meat & Seafood',
+        'Fruit & Vegetables'
     ];
 
-    const dir = '/src/scripts/coles_catalogue/';
+    const dir = 'src/scripts/weaklyPrices/coles_catalogue/';
 
     return getCuratedCatalogue(catagories, dir, itemsPerCatagory);
 }
 
-function getCuratedWoolies() {
+function getCuratedWoolies(itemsPerCatagory: number) {
 
+    const catagories = [
+        'Half Price',
+        'Prices Dropped',
+    ];
+
+    const dir = 'src/scripts/weaklyPrices/woolies_catalogue/'
+
+    return getCuratedCatalogue(catagories, dir, itemsPerCatagory)
 }
 
 function getCuratedCatalogue(catagories: string[], dir: string, itemsPerCatagory: number) {
@@ -96,11 +104,11 @@ function getCuratedCatalogue(catagories: string[], dir: string, itemsPerCatagory
 
     for (const catagory of catagories) {
 
-        const items = reader.readCsv(dir, catagory);
+        let items = reader.readCsv(dir, catagory);
 
-        const drops = reader.getTopDrops(items, itemsPerCatagory);
+        items = reader.getTopDrops(items, itemsPerCatagory);
 
-        allItems.push(...drops);
+        allItems.push(...items);
     }
 
     return allItems;

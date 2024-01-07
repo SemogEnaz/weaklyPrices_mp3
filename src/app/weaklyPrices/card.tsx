@@ -1,5 +1,58 @@
 import '@/app/weaklyPrices/weaklyPrices.css'
 
+export default function Card({ title, catalogue, titleClasses, addValidDates }) {
+
+    let validThruHTML = <div></div>;
+    let titleCSS = '';
+
+    if (addValidDates) {
+        const validThru = getValidDates();
+        validThruHTML = <p className='validDates'>{validThru} (Every <span className={''}>Monday</span>)</p>;
+        titleCSS = 'title'
+    }
+
+    return (
+        <div className="card">
+
+            {/* Headings */}
+            <div className={titleCSS}>
+
+                <h2 className={`${titleClasses}`}>
+                    {title}
+                </h2>
+
+                {/* The className can be set to company color from the prop */}
+                {validThruHTML}
+            </div>
+
+            {/* Item tables */}
+            <div className="table">
+
+                {/* Heading */}
+                <div className='heading'>
+                    <p className='name'>Items</p>
+                    <p className='price'>Prices</p>
+                </div>
+
+                {catalogue.map((item, index) => (
+                    <div key={index} className='flex'>
+
+                        <div className='name'>
+                            {item.name}
+                        </div>
+
+                        <div className='price'>
+                                <p className='text-gray-400'>${item.oldPrice}</p> 
+                                &nbsp;${item.newPrice}
+                        </div>
+
+                    </div>
+                ))}
+            </div>
+        </div>
+    );
+}
+
 function getValidDates(): string {
 
     const currentDate = new Date();
@@ -29,51 +82,4 @@ function getValidDates(): string {
 
 function getDateStr(dateObj: Date): string {
     return `${dateObj.getDate()}/${dateObj.getMonth()+1}`;
-}
-
-export default function Card({ title, catalogue, titleClasses }) {
-
-    const validThru = getValidDates();
-
-    return (
-    <div className="card">
-
-        {/* Headings */}
-        <div className='title'>
-
-            <h2 className={`brand ${titleClasses}`}>
-                {title}
-            </h2>
-
-            {/* The className can be set to company color from the prop */}
-            <p className='validDates'>{validThru} (Every <span className={''}>Monday</span>)</p>
-        </div>
-
-        {/* Item tables */}
-        <div className="table">
-
-            {/* Heading */}
-            <div className='heading'>
-                <p className='name'>Items</p>
-                <p className='price'>Prices</p>
-            </div>
-
-            {catalogue.map((item, index) => (
-                <div key={index} className='flex'>
-
-                    <div className='name'>
-                        {item.name}
-                    </div>
-
-                    <div className='price'>
-                            <p className='text-gray-400'>${item.oldPrice}</p> 
-                            &nbsp;${item.newPrice}
-                    </div>
-
-                </div>
-            ))}
-        </div>
-    </div>
-);
-
 }

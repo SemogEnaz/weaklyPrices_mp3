@@ -2,6 +2,10 @@
 @tailwind components;
 @tailwind utilities;
 
+html {
+    overflow-y: scroll;
+}
+
 /* Scroll bar */
 ::-webkit-scrollbar {
     width: 20px;
@@ -27,6 +31,7 @@
         flex flex-col items-center
 
         xl:flex-row
+        xl:w-3/4
         xl:justify-around
         xl:items-start
     }
@@ -34,10 +39,7 @@
     .card {
         @apply 
             flex flex-col items-center
-            p-5
-
-            md:p-0
-            md:m-8
+            p-1
     }
 
     .title {
@@ -49,15 +51,15 @@
             md:p-4
     }
 
-    .title h2 {
+    .title .brand {
         @apply
-            font-bold text-[90px]
+            text-8xl
 
-            md:text-9xl
+            md:text-[150px]
             md:leading-none
     }
 
-    .title p {
+    .title .validDates {
          @apply
             font-bold
             leading-6
@@ -83,8 +85,13 @@
 
     .name, .price {
         @apply
+            pb-2
+            pt-2
+
+            leading-4
 
             md:p-1.5
+            md:leading-none
     }
 
     .heading {

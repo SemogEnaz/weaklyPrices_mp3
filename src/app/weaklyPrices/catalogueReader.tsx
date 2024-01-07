@@ -7,16 +7,11 @@ export type Item = {
 }
 
 export default class CatalogueReader {
-    fileName: string;
-
-    constructor() {
-        this.fileName = '';
-    }
 
     readCsv(dir: string, fileName: string): Item[] {
 
         const extension = '.csv'
-        const filePath = dir + this.fileName + extension;
+        const filePath = dir + fileName + extension;
         console.log(`Attempting to read from ${filePath}`);
     
         try {
