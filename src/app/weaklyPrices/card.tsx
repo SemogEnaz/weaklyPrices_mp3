@@ -38,7 +38,9 @@ export function Card({ title, catalogue, titleClasses, addValidDates }) {
                     <div key={index} className='flex'>
 
                         <div className='name'>
+                            <a href={item.link}>
                             {item.name}
+                            </a>
                         </div>
 
                         <div className='price'>
@@ -54,8 +56,6 @@ export function Card({ title, catalogue, titleClasses, addValidDates }) {
 }
 
 export function ExpandableCard({ title, catalogue, animationCSS }) {
-
-    
 
     return (
         <div className={`expandable-card ${animationCSS}`}>
@@ -82,7 +82,9 @@ export function ExpandableCard({ title, catalogue, animationCSS }) {
                     <div key={index} className='flex'>
 
                         <div className='name'>
+                            <a href={item.link}>
                             {item.name}
+                            </a>
                         </div>
 
                         <div className='price'>

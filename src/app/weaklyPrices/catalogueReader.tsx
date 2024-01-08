@@ -4,6 +4,7 @@ export type Item = {
     name: string;
     oldPrice: number;
     newPrice: number;
+    link: string;
 }
 
 export default class CatalogueReader {
@@ -36,7 +37,8 @@ export default class CatalogueReader {
             const item: Item = {
                 name: substrings[0],
                 oldPrice: parseFloat(substrings[1]),
-                newPrice: parseFloat(substrings[2])
+                newPrice: parseFloat(substrings[2]),
+                link: substrings[3],
             };
     
             items.push(item);
