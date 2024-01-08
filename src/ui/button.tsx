@@ -26,6 +26,6 @@ export function Button({ link, text }) {
 
 export function HomeButton() {
     return (
-        <Button link={'/'} text={"Home"} />
+        <TopButton link={'/'} text={"Home"} />
     );
 }
