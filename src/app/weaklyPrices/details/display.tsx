@@ -1,8 +1,9 @@
 "use client"
 
 import { HomeButton } from "@/ui/button";
-import Card from "@/app/weaklyPrices/card";
+import { ExpandableCard } from "@/app/weaklyPrices/card";
 
+import '@/ui/arrow.css'
 import '@/app/global.css';
 import './details.css'
 
@@ -37,23 +38,29 @@ export default function Display({ catalogue }) {
 
         if (noItems) return null;
 
-        if (invisible) 
+        if (invisible)
             return (
                 <div 
                 key={card.id}
                 className="relative col-center justify-center md:min-w-[600px] ml-1 mr-1"
                 >
+                    <ExpandableCard 
+                    title={card.name} 
+                    catalogue={card.items} 
+                    animationCSS={'hide'}
+                    />
 
-                    <div 
-                        className='expandable cursor-pointer'
-                        onClick={() => toggleVisibility(card.id)}
-                    >
-                    View {card.name}</div>
+                    <div className="cursor-pointer relative flex items-center">
+                        <div 
+                            className='expandable'
+                            onClick={() => toggleVisibility(card.id)}
+                        >
+                        View {card.name}</div>
 
-                    <div className="down-arrow"></div>
+                        <div className="arrow down"></div>
+                    </div>
                     
                 </div>
-                
             );
 
         return (
@@ -61,11 +68,10 @@ export default function Display({ catalogue }) {
             key={card.id}
             className="col-center md:max-w-[600px] ml-1 mr-1"
             >
-                <Card 
+                <ExpandableCard 
                     title={card.name} 
-                    catalogue={card.items} 
-                    titleClasses={cardCSS} 
-                    addValidDates={false}
+                    catalogue={card.items}
+                    animationCSS={'show'}
                 />
 
                 <div className="cursor-pointer relative flex items-center">
@@ -74,13 +80,11 @@ export default function Display({ catalogue }) {
                         onClick={() => toggleVisibility(card.id)}
                     >View {card.name}</div>
 
-                    <div className="up-arrow"></div>
+                    <div className='arrow up'></div>
                 </div>
 
             </div>
         );
-        
-        
     });
 
     // Main component

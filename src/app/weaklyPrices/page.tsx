@@ -3,7 +3,7 @@ import '@/app/weaklyPrices/weaklyPrices.css';
 import { Poppins } from 'next/font/google';
 import { Open_Sans } from 'next/font/google';
 
-import Card from '@/app/weaklyPrices/card'
+import { Card } from '@/app/weaklyPrices/card'
 import { Button, TopButton } from '@/ui/button';
 import CatalogueReader, { Item } from '@/app/weaklyPrices/catalogueReader';
 
@@ -76,7 +76,6 @@ function getCuratedColes(itemsPerCatagory: number) {
         'Dairy, Eggs & Fridge',
         'Pantry',
         'Meat & Seafood',
-        'Fruit & Vegetables'
     ];
 
     const dir = 'src/scripts/weaklyPrices/coles_catalogue/';

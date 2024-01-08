@@ -1,6 +1,6 @@
 import '@/app/weaklyPrices/weaklyPrices.css'
 
-export default function Card({ title, catalogue, titleClasses, addValidDates }) {
+export function Card({ title, catalogue, titleClasses, addValidDates }) {
 
     let validThruHTML = <div></div>;
     let titleCSS = '';
@@ -12,7 +12,7 @@ export default function Card({ title, catalogue, titleClasses, addValidDates }) 
     }
 
     return (
-        <div className="card">
+        <div className={`card`}>
 
             {/* Headings */}
             <div className={titleCSS}>
@@ -23,6 +23,50 @@ export default function Card({ title, catalogue, titleClasses, addValidDates }) 
 
                 {/* The className can be set to company color from the prop */}
                 {validThruHTML}
+            </div>
+
+            {/* Item tables */}
+            <div className="table">
+
+                {/* Heading */}
+                <div className='heading'>
+                    <p className='name'>Items</p>
+                    <p className='price'>Prices</p>
+                </div>
+
+                {catalogue.map((item, index) => (
+                    <div key={index} className='flex'>
+
+                        <div className='name'>
+                            {item.name}
+                        </div>
+
+                        <div className='price'>
+                                <p className='text-gray-400'>${item.oldPrice}</p> 
+                                &nbsp;${item.newPrice}
+                        </div>
+
+                    </div>
+                ))}
+            </div>
+        </div>
+    );
+}
+
+export function ExpandableCard({ title, catalogue, animationCSS }) {
+
+    
+
+    return (
+        <div className={`expandable-card ${animationCSS}`}>
+
+            {/* Headings */}
+            <div>
+
+                <h2 className={'text-center text-6xl p-3'}>
+                    {title}
+                </h2>
+
             </div>
 
             {/* Item tables */}

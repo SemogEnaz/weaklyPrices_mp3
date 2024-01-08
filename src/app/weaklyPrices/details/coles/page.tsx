@@ -41,7 +41,7 @@ function getCatagories() {
     return [
         'Frozen',
         'Pantry',
-        'Meat, Seafood',
+        'Meat & Seafood',
         'Fruit & Vegetables',
         'Dairy, Eggs & Fridge',
         'Deli',
