@@ -1,0 +1,82 @@
+.boat {
+    height: 3vw;
+    width: 8vw;
+
+    background-color: white;
+
+    position: absolute;
+    left: 50vw;
+    transform: translateX(-50%) translateY(-4vw);
+
+    animation: move-boat-2 6665ms infinite ease-in-out;
+}
+
+.boat-container {
+    display: flex;
+    align-items: center;
+    position: relative;
+}
+
+@keyframes move-boat-2 {
+    0%, 100% {
+        transform: translateX(-50%) translateY(-4vw);
+    } 50% {
+        transform: translateX(-50%) translateY(1vw);
+    }
+}
+
+/*6700ms*/
+@keyframes move-boat {
+    0%, 100% {
+        transform: translateY(-2rem);
+    } 50% {
+        transform: translateY(1rem);
+    }
+}
+
+.wave-container {
+    margin-top: 100px;
+    position: relative;
+    overflow: hidden;
+
+    display: flex;
+}
+
+.wave.ahead {
+    animation: move-wave-ahead 20s infinite linear;
+}
+
+.wave.behind {
+    animation: move-wave-behind 20s infinite linear;
+}
+
+@keyframes move-wave-ahead {
+    from {
+        transform: translateX(0px);
+    } to {
+        transform: translateX(100vw);
+    }
+}
+
+@keyframes move-wave-behind {
+    from {
+        transform: translateX(-100vw);
+    } to {
+        transform: translateX(0px);
+    }
+}
+
+.ocean {
+    width: 100%;
+    height: 100vh;
+    background: linear-gradient(rgb(0, 0, 90), rgb(0, 0, 5));
+
+    display: flex;
+    justify-content: center;
+}
+
+@media (max-width: 500px) {
+    .wave-container {
+        margin-top: 60px;
+    }
+}
