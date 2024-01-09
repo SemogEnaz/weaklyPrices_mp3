@@ -1,3 +1,7 @@
+# TODO: Handle the click interception, sometimes it is intercepted and not
+#       caught by selenium and enters the except case. Need to close clicked
+#       window.
+
 from bs4 import BeautifulSoup
 
 import re
@@ -8,7 +12,6 @@ from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.by import By
-from selenium.webdriver import ActionChains
 
 from selenium.common.exceptions import NoSuchElementException
 from selenium.common.exceptions import ElementNotInteractableException
@@ -98,6 +101,7 @@ def get_catagories(html) -> list[Catagory]:
 
     return catagories
 
+# TODO: This will need some majour updates :(
 def show_most_items(driver, link) -> BeautifulSoup:
 
     get_html(driver, link, 'sf-items-table') # Just for navagating the driver to the page
@@ -113,7 +117,7 @@ def show_most_items(driver, link) -> BeautifulSoup:
         if 'display: none' in load_more_button.get_attribute('style'):
             break
 
-        driver.execute_script("arguments[0].scrollIntoView({behavior: 'smooth', block: 'center'});", load_more_button)
+        scroll_to(driver, "show-more")
 
         try:
             load_more_button.click()
@@ -122,15 +126,23 @@ def show_most_items(driver, link) -> BeautifulSoup:
         except ElementClickInterceptedException:
             print(' :( ', end="")
             try:
-                WebDriverWait(driver, 3).until(EC.visibility_of(load_more_button))
-                WebDriverWait(driver, 3).until(EC.element_to_be_clickable(load_more_button))
+                scroll_to(driver, "show-more")
+                WebDriverWait(driver, 4).until(EC.visibility_of(load_more_button))
+                WebDriverWait(driver, 4).until(EC.element_to_be_clickable(load_more_button))
                 load_more_button.click()
             except:
-                iframe = driver.find_element(By.ID, "show-more")
-                ActionChains(driver)\
-                    .scroll_to_element(iframe)\
-                    .perform()
-                continue
+                scroll_to(driver, "show-more")
+                print(" Fuck ", end="")
+                
+
+def scroll_to(driver, element_id: str) :
+    # https://www.selenium.dev/documentation/webdriver/actions_api/wheel/
+    iframe = driver.find_element(By.ID, element_id)
+
+    #ActionChains(driver).scroll_to_element(iframe).perform()
+
+    driver.execute_script("arguments[0].scrollIntoView({behavior: 'smooth', block: 'center'});", iframe)
+
 
 def populate_items(driver, catagory: Catagory) -> None:
 
@@ -222,11 +234,11 @@ def write_catalogue_to_csv(catalogue: list[Catagory], dir_name: str) -> None:
             writer = csv.writer(file)
             writer.writerows(data)
 
-def get_top_five(all_items: list[Item]) -> list[Item]:
+def get_top_drops(all_items: list[Item], item_count: int) -> list[Item]:
 
     sorted_items = sorted(all_items, key=lambda item: item.old_price - item.new_price, reverse=True)
     
-    return sorted_items[:5]
+    return sorted_items[:item_count]
 
 def main():
 
@@ -236,19 +248,19 @@ def main():
     catalogue_html = get_html(driver, catalogue_link, 'sf-catalogue')
     catalogue = get_catalogue(driver, catalogue_html)
 
-    top_five = get_top_five(catalogue[0].items)
+    top_five = get_top_drops(catalogue[0].items, 10)
 
     catagory = Catagory('top', '')
 
     print()
     for item in top_five:
         print(item.name, item.old_price, item.new_price)
-        catagory.add_item(item)
+        #catagory.add_item(item)
     print()
 
     write_catalogue_to_csv(catalogue, "./coles_catalogue/")
 
-    write_catalogue_to_csv([catagory], "./coles_catalogue/")
+    #write_catalogue_to_csv([catagory], "./coles_catalogue/")
 
     driver.quit()
 

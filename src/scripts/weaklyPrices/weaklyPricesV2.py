@@ -295,6 +295,7 @@ def get_woolworths_catalogue():
 
         soup = BeautifulSoup(driver.page_source, 'lxml')
         catagory_name = soup.find(attrs={'class':catagory_title_class}).get_text()
+        catagory_name = catagory_name[1:len(catagory_name) - 1]
         catagory = Catagory(catagory_name, link)
 
         print(f'{catagory_name}', end='\n\n', flush=True)
@@ -388,7 +389,7 @@ def get_woolworths_catalogue():
                     continue
 
                 item_name = element_name.text
-                item_name = item_name[1:len(item_name)-1]
+                item_name = item_name[:len(item_name)]
 
                 item_link = element_link.get_attribute('href')
 
@@ -418,5 +419,5 @@ def get_woolworths_catalogue():
 
     driver.quit()
 
-#get_coles_catalogue()
+get_coles_catalogue()
 get_woolworths_catalogue()
