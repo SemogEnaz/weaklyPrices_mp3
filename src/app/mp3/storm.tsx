@@ -1,3 +1,5 @@
+"use client"
+
 import '@/app/mp3/storm.css'
 
 import Image from 'next/image';
