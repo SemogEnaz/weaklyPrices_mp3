@@ -25,16 +25,19 @@ export default function Storm({ isRain, isThunder }) {
     }
 
     const Thunder = () => {
+
+        const assetsPath = '/mp3/assets/';
+
         return (
             <div className='storm'>
                 <LightningImg 
-                    link='/mp3/lightning-strike-r.svg'
+                    link={`${assetsPath}lightning-strike-r.svg`}
                     className='right'/>
                 <LightningImg 
-                    link='/mp3/lightning-strike-m.svg'
+                    link={`${assetsPath}lightning-strike-m.svg`}
                     className='middle'/>
                 <LightningImg 
-                    link='/mp3/lightning-strike-l.svg'
+                    link={`${assetsPath}lightning-strike-l.svg`}
                     className='left'/>
             </div>
         );

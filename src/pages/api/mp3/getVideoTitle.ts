@@ -15,7 +15,7 @@ export default function handler(req, res) {
             res.status(400).json(null);
         }
         const title = stdout.split('\n')[0];
-        console.log("'" + title + "'");
         res.status(200).json({ 'title': title });
     });
+    res.status(200);
 }

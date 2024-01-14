@@ -6,25 +6,26 @@ import Image from 'next/image';
 
 export default function Waves({ body }) {
 
+    const assetsPath = '/mp3/assets/';
+
     const Wave = () => {
         return (
             <Image 
-                src='/mp3/wave2.svg' 
+                src={`${assetsPath}wave2.svg`}
                 alt="wave"
                 width={400}
                 height={160}
                 style={{
                     width: '1920px',
                     height: 'auto',
-                }}
-            />
+                }}/>
         );
     }
 
     const Boat = () => {
         return (
             <Image 
-                src='/mp3/boat.svg' 
+                src={`${assetsPath}boat.svg`}
                 alt="wave"
                 width={400}
                 height={160}
@@ -41,17 +42,12 @@ export default function Waves({ body }) {
         <div className='wave-container'>
 
             <div className='boat-container'>
-                    <Boat />
-            </div>
-
+                <Boat /></div>
             <div className='wave ahead'>
-                <Wave />
-            </div>
-
+                <Wave /></div>
             <div className='wave behind'>
-                <Wave />
-            </div>
-            
+                <Wave /></div>
+ 
         </div>
 
         <div className='ocean'>

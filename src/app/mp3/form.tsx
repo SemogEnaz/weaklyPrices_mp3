@@ -9,10 +9,10 @@ import Image from 'next/image';
 export default function SubmissionForm() {
 
     const [title, setTitle] = useState('');
+    const [isAudio, setAudio] = useState(true);
     const [isRevealed, setRevealed] = useState(false);
     const [url, setUrl] = useState('');
     const [isSubmit, setSubmit] = useState(false);
-    const [isAudio, setAudio] = useState(true);
     const [loadingData, setLoading] = useState(() => ({
         isLoading: false,
         message: ''
@@ -26,10 +26,10 @@ export default function SubmissionForm() {
     const [videoOptions, setVideoOptions] = useState(() => {
         return ({
             'format': '',
-            'subtitles': '',
-            'thumbnailOption': ''
-            //sponsor block
-            //chapters
+            'thumbnail': '',    // embed, download
+            'subtitles': '',    // embed, none
+            'chapters': '',     // write, none
+            'sponsor': '',      // mark, remove
         })
     })
     const [fileName, setFileName] = useState('');
@@ -75,20 +75,26 @@ export default function SubmissionForm() {
 
     useEffect(() => {
 
+        if(!isSubmit) return;
+
         const getAudioOptions = () => {
             const isAudio = '&isAudio=true';
             const fileType = 'format;' + audioOptions['format'];
             const thumbnail = 'thumbnail;' + audioOptions['thumbnailOption'];
-
+    
             return isAudio + '&options=' + encodeURIComponent(fileType + ';' + thumbnail);
         }
 
         const getVideoOptions = () => {
             const isAudio = '&isAudio=false';
             const fileType = 'format;' + videoOptions['format'];
-            //const thumbnail = 'thumbnail;' + audioOptions['thumbnailOption'];
+            const subtitles = 'subtitles;' + videoOptions['subtitles'];
+            const chapters = 'chapters;' + videoOptions['chapters'];
+            const sponsor = 'sponsor;' + videoOptions['sponsor'];
 
-            return isAudio + '&options=' + encodeURIComponent(fileType);
+            return isAudio + '&options=' + encodeURIComponent(
+                fileType + ';' + subtitles + ';' + chapters + ';' + sponsor
+            );
         }
 
         let apiUrl = '/api/mp3/downloadVideo?';
@@ -96,38 +102,75 @@ export default function SubmissionForm() {
 
         let apiParam = isAudio ? getAudioOptions() : getVideoOptions();
         apiUrl += apiParam;
-        console.log(apiParam);
 
-        async function fetchData() {
+        const fetchData = async () => {
 
-            setLoading((prev) => ({
+            setLoading({
                 isLoading: true,
                 message: 'Downloading Video'
-            }));
+            });
 
             try {
-                const response = await fetch(apiUrl)
+                const response = await fetch(apiUrl);
                 const data = await response.json();
-                
-                if (data.status == 'true')
-                    setFileName('/downloads/' + title);
 
-                setLoading((prev) => ({
-                    isLoading: false,
-                    message: ''
-                }));
+                setFileName(data.fileName);
             } catch (error) {
                 console.error('Fetch error: ', error);
+            } finally {
+                setLoading({
+                    isLoading: false,
+                    message: ''
+                });
             }
-        }
-
-        if (isSubmit) {
-            console.log('starting download');
-            fetchData();
-            console.log('submitted');
-        }
+        };
+    
+        fetchData();
+    
+        setSubmit(false);
 
     }, [isSubmit]);
+
+
+    useEffect(() => {
+
+        if (fileName == '') return;
+
+        const deleteContent = () => {
+            fetch(`api/mp3/deleteVideo?fileName=${fileName}`);
+        };
+    
+        const downloadContent = () => {
+    
+            setLoading(prev => ({
+                isLoading: true,
+                message: 'Generating Link'
+            }));
+
+            const fileLink = `/mp3/downloads/${fileName}`;
+        
+            const a = document.createElement('a');
+            a.href = fileLink;
+            a.download = title + '.' + fileName.split('.').pop();
+    
+            document.body.appendChild(a);
+            a.click();
+            a.remove();
+
+            setLoading(prev => ({
+                isLoading: false,
+                message: ''
+            }));
+        
+            setTimeout(() => {
+                deleteContent();
+            }, 10 * 60000);
+        };
+
+        downloadContent();
+        setFileName('');
+
+    }, [fileName]);
 
     const Title = ({ title }) => {
 
@@ -255,33 +298,103 @@ export default function SubmissionForm() {
 
         const contents = [
             '.mkv', '.mp4', '[best]'
-        ]
+        ];
 
         const values = [
             'mkv', 'mp4', 'best'
-        ]
+        ];
 
-        const checkboxes = make_checkboxRaw(contents, values);
+        const formats = make_checkboxRaw(contents, values);
 
-        const fileFormatComponent = 
-            <div className="checkbox-options">
-                {checkboxes.map(options => {
-                    return (
+        const fileFormatComponent = () => {
+            return (
+                <div className="checkbox-options">
+                    {formats.map(option => (
                         <Checkbox
-                            key={options.value}
-                            content={options.content}
-                            value={options.value}
+                            key={option.value}
+                            content={option.content}
+                            value={option.value}
                             attribute={'format'} />
-                    );
-                })}
-            </div>
+                    ))}
+                </div>
+            );
+        };
+
+        const subtitles = make_checkboxRaw(
+            ['Subtitles'], ['embed']
+        );
+
+        const subtitleComponent = () => {
+            return (
+                <>
+                    {subtitles.map(option => (
+                        <Checkbox
+                            key={option.value}
+                            content={option.content}
+                            value={option.value}
+                            attribute={'subtitles'} />
+                    ))}
+                </>
+            );
+        };
+
+        const chapters = make_checkboxRaw(
+            ['Chapters'], ['embed']
+        );
+
+        const chapterComponent = () => {
+            return (
+                <>
+                    {chapters.map(option => (
+                        <Checkbox
+                            key={option.value}
+                            content={option.content}
+                            value={option.value}
+                            attribute={'chapters'} />
+                    ))}
+                </>
+            );
+        };
+
+        const sponsor = make_checkboxRaw(
+            ['Mark', 'Block'],
+            ['mark', 'remove']
+        );
+
+        const sponsorComponent = () => {
+            return (
+                <div className="checkbox-options">
+                    {sponsor.map(option => (
+                        <Checkbox
+                            key={option.value}
+                            content={option.content}
+                            value={option.value}
+                            attribute={'sponsor'} />
+                    ))}
+                </div>
+            );
+        };
 
         return (
             <>
                 <div className="form-options">
-                    <div >File Formats:</div>
-                    {fileFormatComponent}
+                    <div>File Formats:</div>
+                    {fileFormatComponent()}
                 </div>
+                <div className="flex justify-between ">
+                    <div className="form-options small">
+                        <div>Write to Video:</div>
+                        <div className="checkbox-options">
+                            {subtitleComponent()}
+                            {chapterComponent()}
+                        </div>
+                    </div>
+                    <div className="form-options small">
+                        <div>Sponsor Handling</div>
+                        {sponsorComponent()}
+                    </div>
+                </div>
+                
             </>
         );
     }
@@ -334,6 +447,15 @@ export default function SubmissionForm() {
                     Submit
                 </div>
 
+                <div className="flex justify-center mt-[150px] cursor-crosshair">
+                    <Image
+                        src="https://jipel.law.nyu.edu/wp-content/uploads/2023/03/image-768x386.png"
+                        alt="YOU WOULDN'T DOWNLOAD A CAR!!!"
+                        width={400}
+                        height={200} />
+                </div>
+                
+
             </div>
         );
     };
@@ -343,7 +465,7 @@ export default function SubmissionForm() {
             <div className="form loading">
                 <div className="captains-wheel min-width-[70px]">
                     <Image
-                        src={'/mp3/captainsWheel.svg'}
+                        src={'/mp3/assets/captainsWheel.svg'}
                         alt="Captains Wheel"
                         width={100}
                         height={100}
@@ -360,82 +482,7 @@ export default function SubmissionForm() {
         );
     }
 
-    const CompletedForm = () => {
-
-        const getExtension = () => {
-
-            if (isAudio) 
-                return '.' + (
-                    audioOptions['format'] == '0' ? 'opus' : audioOptions['format']
-                    );
-            
-            return '.' + (
-                videoOptions['format'] == 'best' ? 'mkv' : videoOptions['format']
-            );
-        };
-
-        const download = () => {
-            const param = `fileName=${
-                encodeURIComponent(
-                    title + getExtension()
-                )
-            }`;
-
-            setLoading(prev => ({
-                isLoading: true,
-                message: 'Generating Link'
-            }));
-
-            fetch(`/api/mp3/uploadVideo?${param}`)
-                .then(response => response.blob())
-                .then(blob => {
-                    // Create a blob link to download
-                    const url = window.URL.createObjectURL(blob);
-                    const a = document.createElement('a');
-                    a.href = url;
-                    a.download = title + getExtension(); // or any other filename
-                    document.body.appendChild(a); // Append the anchor to body
-                    a.click();
-                    a.remove(); // Clean up
-                    window.URL.revokeObjectURL(url); // Release blob URL
-                })
-                .then(() => setLoading(prev => ({
-                    isLoading: false,
-                    message: ''
-                })));
-        }
-
-        return (
-            <div className='form completed'>
-
-                <div 
-                    className="submition-button"
-                    onClick={() => {
-                        setSubmit(false);
-                    }}>
-                    Back
-                </div>
-
-                <div>
-                    Success!
-                </div>
-
-                <div 
-                    className="submition-button"
-                    onClick={() => {
-                        download();
-                        setSubmit(false);
-                    }}>
-                        Download
-                </div>
-
-            </div>
-        );
-    };
-
-    //
-
     if (loadingData.isLoading) return <LoadingForm message={loadingData.message}/>
 
-    return  isSubmit ? <CompletedForm /> : <Form /> ;
+    return  <Form /> ;
 }
