@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import AudioForm from './formAudio';
 import VideoForm from "./formVideo";
+import LoadingForm from "./formLoading";
 
 import './form.css'
 import './checkbox.css'
@@ -250,28 +251,6 @@ export default function SubmissionForm() {
             </div>
         );
     };
-
-    const LoadingForm = ({ message }) => {
-        return (
-            <div className="form loading">
-                <div className="captains-wheel min-width-[70px]">
-                    <Image
-                        src={'/mp3/assets/captainsWheel.svg'}
-                        alt="Captains Wheel"
-                        width={100}
-                        height={100}
-                        style={{
-                            width: '200px',
-                            height: 'auto',
-                        }}
-                    />
-                </div>
-                <div className="loading-text">
-                    {message}
-                </div>
-            </div>
-        );
-    }
 
     if (loadingData.isLoading) return <LoadingForm message={loadingData.message}/>
 
