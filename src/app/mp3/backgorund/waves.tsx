@@ -1,6 +1,6 @@
 "use client"
 
-import '@/app/mp3/waves.css';
+import './waves.css';
 
 import Image from 'next/image';
 

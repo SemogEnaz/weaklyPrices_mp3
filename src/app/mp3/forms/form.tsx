@@ -1,11 +1,11 @@
 "use client"
 
 import { useEffect, useState } from "react";
-import AudioForm from '@/app/mp3/formAudio';
-import VideoForm from "@/app/mp3/formVideo";
+import AudioForm from './formAudio';
+import VideoForm from "./formVideo";
 
-import '@/app/mp3/form.css'
-import '@/app/mp3/checkbox.css'
+import './form.css'
+import './checkbox.css'
 import Image from 'next/image';
 
 export default function SubmissionForm() {
