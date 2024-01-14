@@ -357,7 +357,7 @@ export default function SubmissionForm() {
         };
 
         const sponsor = make_checkboxRaw(
-            ['Mark', 'Block'],
+            ['Mark', 'Remove'],
             ['mark', 'remove']
         );
 
@@ -381,7 +381,11 @@ export default function SubmissionForm() {
                     <div>File Formats:</div>
                     {fileFormatComponent()}
                 </div>
-                <div className="flex justify-between ">
+                <div className="
+                    flex flex-col sm:flex-row
+                    justify-between 
+                    items-center 
+                    h-[250px] sm:h-fit">
                     <div className="form-options small">
                         <div>Write to Video:</div>
                         <div className="checkbox-options">
