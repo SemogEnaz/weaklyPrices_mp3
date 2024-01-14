@@ -74,12 +74,8 @@ html {
     margin-bottom: 100px;
 }
 
-.form > div {
+.form .form-options {
     margin-bottom: 30px;
-}
-
-.form > div.form-title {
-    margin-bottom: 10px;
 }
 
 .form-title {
@@ -136,6 +132,7 @@ input[type="text"]:focus {
     display: flex;
     justify-content: space-between;
     align-items: center;
+    margin-bottom: 30px;
 }
 
 .content-type-button {
@@ -167,6 +164,7 @@ input[type="text"]:focus {
     width: 100%;
     display: flex;
     flex-direction: column;
+    justify-content: space-between;
     align-items: center;
 
     background-color: rgba(30, 59, 138, 0.25);
@@ -175,12 +173,18 @@ input[type="text"]:focus {
     padding: 10px;
 }
 
-.form-options.small {
+.one-line-options {
+    height: fit-content;
+    display: flex;
+    justify-content: space-between;
+}
+
+.one-line-options .form-options {
     width: 49%;
 }
 
-.form-options > div {
-    margin: 10px;
+.form-options div {
+    margin: 5px;
 }
 
 .submition-button {
@@ -210,14 +214,10 @@ input[type="text"]:focus {
     box-shadow: rgba(0, 0, 0, 0.35) 0px -50px 36px -28px inset;
 }
 
-@media (max-width: 450px) {
+@media (max-width: 500px) {
 
     .form {
         width: 90%;
-    }
-
-    .from div {
-        margin-bottom: 10px;
     }
 
     .form-title {
@@ -231,14 +231,17 @@ input[type="text"]:focus {
     }
 
     .form-options {
-        margin-top: 25px;
         padding: 10px;
     }
 
-    .form-options.small {
-        width: 100%;
-        margin-top: 0px;
+    .one-line-options {
+        flex-direction: column;
+        justify-content: space-between;
+        height:fit-content;
+    }
 
+    .one-line-options .form-options {
+        width: 100%;
     }
 
     .submition-button {

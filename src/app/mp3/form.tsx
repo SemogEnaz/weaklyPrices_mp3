@@ -1,6 +1,8 @@
 "use client"
 
 import { useEffect, useState } from "react";
+import AudioForm from '@/app/mp3/formAudio';
+import VideoForm from "@/app/mp3/formVideo";
 
 import '@/app/mp3/form.css'
 import '@/app/mp3/checkbox.css'
@@ -20,7 +22,7 @@ export default function SubmissionForm() {
     const [audioOptions, setAudioOptions] = useState(() => {
         return ({
             'format': '',
-            'thumbnailOption': ''
+            'thumbnail': ''
         });
     });
     const [videoOptions, setVideoOptions] = useState(() => {
@@ -80,7 +82,7 @@ export default function SubmissionForm() {
         const getAudioOptions = () => {
             const isAudio = '&isAudio=true';
             const fileType = 'format;' + audioOptions['format'];
-            const thumbnail = 'thumbnail;' + audioOptions['thumbnailOption'];
+            const thumbnail = 'thumbnail;' + audioOptions['thumbnail'];
     
             return isAudio + '&options=' + encodeURIComponent(fileType + ';' + thumbnail);
         }
@@ -186,223 +188,6 @@ export default function SubmissionForm() {
         );
     }
 
-    function make_checkboxRaw(contents: string[], values: string[]) {
-        const checkboxes = [];
-
-        if (contents.length != values.length) throw new Error("error contents != values");
-
-        for (let i = 0; i < contents.length; i++) {
-            checkboxes.push({ 
-                content: contents[i],
-                value: values[i]
-            });
-        }
-
-        return checkboxes;
-    }
-
-    const Checkbox = ({ content, value, attribute }) => {
-
-        const isChecked = isAudio ? 
-            audioOptions[attribute] == value: 
-            videoOptions[attribute] == value;
-
-        const handleClick = () => {
-            const updateOption = (options) => ({
-                ...options,
-                [attribute]: options[attribute] == value ? '' : value
-            });
-
-            if (isAudio)
-                setAudioOptions(updateOption);
-            else
-                setVideoOptions(updateOption)
-        }
-
-        return (
-            <div className="checkbox">
-
-                <div 
-                    className={`box  ${isChecked ? 'checked' : ''}`}
-                    onClick={handleClick}></div>
-
-                <div className="label">{content}</div>
-
-            </div>
-        );
-    };
-
-    const AudioForm = () => {
-
-        let contents = [
-            '.flac', '.mp3', '.wav', '[best]'
-        ];
-
-        let values = [
-            'flac', 'mp3', 'wav', '0'
-        ];
-
-        const fileFormats = make_checkboxRaw(contents, values);
-
-        const fileFormatCheckboxes = 
-            <div className="checkbox-options">
-                {fileFormats.map((checkboxItem) => {
-                    return (
-                        <Checkbox
-                            key={checkboxItem.value}
-                            content={checkboxItem.content}
-                            value={checkboxItem.value}
-                            attribute={'format'} />
-                    )
-                })}
-            </div>
-
-        contents = [
-            'Embeded'//, 'Download'
-        ];
-
-        values = [
-            'embed'//, 'write'
-        ];
-
-        const thumbnailOptions = make_checkboxRaw(contents, values);
-
-        const thumbnailOptionsComponent = 
-            <div className="checkbox-options">
-                {thumbnailOptions.map(option => {
-                    return (
-                        <Checkbox
-                            key={option.content}
-                            content={option.content}
-                            value={option.value}
-                            attribute={'thumbnailOption'} />
-                    );
-                })}
-            </div>
-
-        return (
-            <>
-                <div className="form-options">
-                    <div>File Formats:</div>
-                    {fileFormatCheckboxes}
-                </div>
-                <div className="form-options">
-                    <div>Thumbnail:</div>
-                    {thumbnailOptionsComponent}
-                </div>
-            </>
-        );
-    }
-
-    const VideoForm = () => {
-
-        const contents = [
-            '.mkv', '.mp4', '[best]'
-        ];
-
-        const values = [
-            'mkv', 'mp4', 'best'
-        ];
-
-        const formats = make_checkboxRaw(contents, values);
-
-        const fileFormatComponent = () => {
-            return (
-                <div className="checkbox-options">
-                    {formats.map(option => (
-                        <Checkbox
-                            key={option.value}
-                            content={option.content}
-                            value={option.value}
-                            attribute={'format'} />
-                    ))}
-                </div>
-            );
-        };
-
-        const subtitles = make_checkboxRaw(
-            ['Subtitles'], ['embed']
-        );
-
-        const subtitleComponent = () => {
-            return (
-                <>
-                    {subtitles.map(option => (
-                        <Checkbox
-                            key={option.value}
-                            content={option.content}
-                            value={option.value}
-                            attribute={'subtitles'} />
-                    ))}
-                </>
-            );
-        };
-
-        const chapters = make_checkboxRaw(
-            ['Chapters'], ['embed']
-        );
-
-        const chapterComponent = () => {
-            return (
-                <>
-                    {chapters.map(option => (
-                        <Checkbox
-                            key={option.value}
-                            content={option.content}
-                            value={option.value}
-                            attribute={'chapters'} />
-                    ))}
-                </>
-            );
-        };
-
-        const sponsor = make_checkboxRaw(
-            ['Mark', 'Remove'],
-            ['mark', 'remove']
-        );
-
-        const sponsorComponent = () => {
-            return (
-                <div className="checkbox-options">
-                    {sponsor.map(option => (
-                        <Checkbox
-                            key={option.value}
-                            content={option.content}
-                            value={option.value}
-                            attribute={'sponsor'} />
-                    ))}
-                </div>
-            );
-        };
-
-        return (
-            <>
-                <div className="form-options">
-                    <div>File Formats:</div>
-                    {fileFormatComponent()}
-                </div>
-                <div className="
-                    flex flex-col sm:flex-row
-                    justify-between 
-                    items-center 
-                    h-[250px] sm:h-fit">
-                    <div className="form-options small">
-                        <div>Write to Video:</div>
-                        <div className="checkbox-options">
-                            {subtitleComponent()}
-                            {chapterComponent()}
-                        </div>
-                    </div>
-                    <div className="form-options small">
-                        <div>Sponsor Handling</div>
-                        {sponsorComponent()}
-                    </div>
-                </div>
-                
-            </>
-        );
-    }
-
     const Form = () => {
 
         const placeholder = 'https://www.youtube.com/watch?v=dQw4w9WgXcQ';
@@ -413,7 +198,7 @@ export default function SubmissionForm() {
 
                 <Title title={title} />
 
-                <div className="flex items-center bg-blue-900 rounded-md p-3 drop-shadow-2xl">
+                <div className="flex items-center bg-blue-900 rounded-md p-3 drop-shadow-2xl mb-[30px]">
                     <div className="text-xl text-white">url:</div>
                     <input 
                         type="text"
@@ -441,7 +226,9 @@ export default function SubmissionForm() {
 
                 </div>
 
-                {isAudio ? <AudioForm /> : <VideoForm />}
+                {isAudio ? 
+                <AudioForm audioOptions={audioOptions} setAudioOptions={setAudioOptions} /> :
+                <VideoForm videoOptions={videoOptions} setVideoOptions={setVideoOptions} />}
 
                 <div
                     className='submition-button' 
