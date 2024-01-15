@@ -1,11 +1,10 @@
-import { HomeButton } from '@/ui/button';
-import Waves from './waves';
-import SubmissionForm from './form';
-import Storm from './storm';
+import Waves from './backgorund/waves';
+import SubmissionForm from './forms/form';
+import Storm from './backgorund/storm';
 
 import '@/ui/scrollBar.css';
 import '@/app/global.css';
-import '@/app/mp3/storm.css';
+import '@/app/mp3/backgorund/storm.css';
 
 export default function Page() {
 

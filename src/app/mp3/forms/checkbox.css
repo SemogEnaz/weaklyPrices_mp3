@@ -22,6 +22,14 @@
     box-shadow: rgba(0, 0, 0, 0.35) 0px -50px 36px -28px inset;
 }
 
+.box.blocked {
+    background-color: rgba(128, 128, 128, 0.5);
+}
+
+.box.blocked:hover {
+    cursor: not-allowed;
+}
+
 .checkbox-options {
     width: 100%;
     display: flex;

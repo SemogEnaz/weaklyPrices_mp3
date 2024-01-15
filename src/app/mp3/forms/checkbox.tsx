@@ -1,5 +1,3 @@
-import React from "react";
-
 export function makeCheckboxsRaw(contents: string[], values: string[], attribute: string) {
     const checkboxes = [];
 
@@ -14,28 +12,76 @@ export function makeCheckboxsRaw(contents: string[], values: string[], attribute
     }
 
     return checkboxes;
-}
+};
 
 export function makeCheckboxes(
     checkboxes: {content: string, value: string, attribute: string}[],
     state: {options: any, setOptions: (options: any) => void}) {
 
+    const handleClick = (element: any) => {
+        state.setOptions((option: any) => ({
+            ...option,
+            [element.attribute]: 
+            option[element.attribute] == element.value ? 
+            '' : element.value
+        }));
+    }
+
     return (
-        <div className="checkbox-options">
+        <>
             {checkboxes.map((element) => (
                     <Checkbox
                         key={element.value}
-                        args={{
-                            content: element.content,
-                            value: element.value,
-                            attribute: element.attribute
-                        }}
-                        state={state} />
+                        content={element.content}
+                        isChecked={state.options[element.attribute] == element.value}
+                        hasFormat={true}
+                        handleClick={() => handleClick(element)} />
                 )
             )}
-        </div>
+        </>
     );
-}
+};
+
+export function makeDependingCheckboxes(
+    checkboxes: {content: string, value: string, attribute: string}[],
+    state: {options: any, setOptions: (options: any) => void},
+    trigger: boolean) {
+
+    const handleClick = (element: any) => {
+        
+        // Set value on trigger
+        if (trigger)
+            state.setOptions((option: any) => ({
+                ...option,
+                [element.attribute]: 
+                option[element.attribute] == element.value ? '' : element.value
+            }));
+    }
+
+    /*
+    // Set empty values/reset on false trigger
+    if (!trigger)
+        console.log(`Setting value of attribute to ''`)
+        state.setOptions((option: any) => ({
+            ...option,
+            [option.attribute]: '',
+        }));
+    */
+
+    return (
+        <>
+            {checkboxes.map((element) => (
+                    <Checkbox
+                        key={element.content}
+                        content={element.content}
+                        isChecked={state.options[element.attribute] == element.value}
+                        hasFormat={trigger}
+                        handleClick={() => handleClick(element)} />
+                )
+            )}
+        </>
+    );
+};
 
 export const formOptions = (title: string, component: any): any => {
     return (
@@ -44,38 +90,33 @@ export const formOptions = (title: string, component: any): any => {
             {component}
         </div>
     );
+};
+
+export const checkboxOptions = (elements: any): any => {
+    return (
+        <div className="checkbox-options">
+            {elements}
+        </div>
+    );
 }
 
 type CheckboxProps = {
-    args: {
-        content: string,
-        value: string,
-        attribute: string
-    }, state: {
-        options: any;
-        setOptions: (options: any) => void;
-    }
+    content: string,
+    isChecked: boolean, 
+    hasFormat: boolean,
+    handleClick : (options: any) => void
 };
 
-function Checkbox({ args, state }: CheckboxProps) {
+export function Checkbox({ content, isChecked, hasFormat, handleClick }: CheckboxProps) {
 
-    const { content, value, attribute } = { ...args };
-    const { options, setOptions } = state;
-
-    const isChecked = options[attribute] == value;
-
-    const handleClick = () => {
-        setOptions((option: any) => ({
-            ...option,
-            [attribute]: option[attribute] == value ? '' : value
-        }));
-    }
+    const colorClass = hasFormat ? (isChecked ? 'checked' : '') : 'blocked';
+    //const colorClass = isChecked ? 'checked' : hasFormat ? '' : 'blocked';
 
     return (
         <div className="checkbox">
 
-            <div 
-                className={`box  ${isChecked ? 'checked' : ''}`}
+            <div
+                className={`box ${colorClass}`}
                 onClick={handleClick}></div>
 
             <div className="label">{content}</div>

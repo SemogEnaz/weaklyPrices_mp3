@@ -1,11 +1,31 @@
-import { formOptions, makeCheckboxsRaw, makeCheckboxes } from "./checkbox";
+import { useEffect, useState } from "react";
+import { formOptions, checkboxOptions,
+    makeCheckboxsRaw, makeCheckboxes, makeDependingCheckboxes } from "./checkbox";
 
-export default function VideoForm({ videoOptions, setVideoOptions }: any) {
+export default function VideoForm({ url, title }: { url: string, title: string}) {
+
+    const [videoOptions, setVideoOptions] = useState(() => {
+        return ({
+            'format': '',
+            'thumbnail': '',    // embed, download
+            'subtitles': '',    // embed, none
+            'chapters': '',     // write, none
+            'sponsor': '',      // mark, remove
+        })
+    });
 
     const state = {
         options: videoOptions,
         setOptions: setVideoOptions
     };
+
+    const [hasFormat, setHasFormat] = useState(false);
+
+    useEffect(() => {
+
+        setHasFormat(videoOptions['format'] != '');
+
+    }, [videoOptions['format'], hasFormat]);
 
     const formats = makeCheckboxsRaw(
         ['.mkv', '.mp4', '[best]'],
@@ -13,28 +33,35 @@ export default function VideoForm({ videoOptions, setVideoOptions }: any) {
         'format');
     const formatComponent = makeCheckboxes(
         formats, state);
-    
+
     const subtitles = makeCheckboxsRaw(['Subtitles'], ['embed'], 'subtitles');
     const chapters = makeCheckboxsRaw(['Chapters'], ['embed'], 'chapters');
-    const subsNchapsComponent = makeCheckboxes(
-        [...subtitles, ...chapters], state);
+    const subsNchapsComponent = makeDependingCheckboxes(
+        [...subtitles, ...chapters], state, hasFormat);
 
     const sponsor = makeCheckboxsRaw(
         ['Mark', 'Remove'],
         ['mark', 'remove'],
         'sponsor');
-    const sponsorComponent = makeCheckboxes(
-        sponsor, state);
+    const sponsorComponent = makeDependingCheckboxes(
+        sponsor, state, hasFormat);
 
     return (
         <>
-            {formOptions('File Formats:', [formatComponent])}
+            {formOptions(
+                'File Formats:', checkboxOptions(formatComponent))}
             <div className="one-line-options">
-                <div className="form-options">
-                    <div>Write to Video:</div>
-                    {subsNchapsComponent}
-                </div>
-                {formOptions('Sponsor Handling', [sponsorComponent])}
+                {formOptions(
+                    'Write to Video:', checkboxOptions(subsNchapsComponent))}
+                {formOptions(
+                    'Sponsor Handling:', checkboxOptions(sponsorComponent))}
+            </div>
+            <div
+                    className='submition-button' 
+                    onClick={() => {
+                        //setSubmit(true);
+                    }}>
+                    Submit
             </div>
             
         </>

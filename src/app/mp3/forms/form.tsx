@@ -26,6 +26,10 @@ export default function SubmissionForm() {
             'thumbnail': ''
         });
     });
+    const audioStates = {
+        options: audioOptions,
+        setOptions: setAudioOptions
+    }
     const [videoOptions, setVideoOptions] = useState(() => {
         return ({
             'format': '',
@@ -228,16 +232,8 @@ export default function SubmissionForm() {
                 </div>
 
                 {isAudio ? 
-                <AudioForm audioOptions={audioOptions} setAudioOptions={setAudioOptions} /> :
-                <VideoForm videoOptions={videoOptions} setVideoOptions={setVideoOptions} />}
-
-                <div
-                    className='submition-button' 
-                    onClick={() => {
-                        setSubmit(true);
-                    }}>
-                    Submit
-                </div>
+                <AudioForm url={url} title={title} /> :
+                <VideoForm url={url} title={title} />}
 
                 <div className="flex justify-center mt-[150px] cursor-crosshair">
                     <Image
@@ -246,8 +242,6 @@ export default function SubmissionForm() {
                         width={400}
                         height={200} />
                 </div>
-                
-
             </div>
         );
     };
