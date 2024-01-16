@@ -14,7 +14,9 @@ export default function AudioForm({ url, setLoading, setFileName, setTitle }: Fo
     const [audioOptions, setAudioOptions] = useState(() => {
         return ({
             'format': '',
-            'thumbnail': ''
+            'thumbnail': '',
+            'embed': '',
+            'download': ''
         });
     });
     const states = {
@@ -38,7 +40,6 @@ export default function AudioForm({ url, setLoading, setFileName, setTitle }: Fo
         setHasFormat(audioOptions['format'] != '');
         
         resetOption('thumbnail');
-        
     }, [audioOptions['format'], hasFormat]);
 
     // Submition effect, calling the backend to download content
@@ -62,10 +63,13 @@ export default function AudioForm({ url, setLoading, setFileName, setTitle }: Fo
 
         const getAudioParam = () => {
             const isAudio = '&isAudio=true';
-            const fileType = 'format;' + audioOptions['format'];
-            const thumbnail = 'thumbnail;' + audioOptions['thumbnail'];
+
+            const paramStr = (attribute: string) => `${attribute}:${audioOptions[attribute]}`
+            const format = paramStr('format');
+            const embed = paramStr('embed');
+            const download = paramStr('download');
     
-            return isAudio + '&options=' + encodeURIComponent(fileType + ';' + thumbnail);
+            return isAudio + '&options=' + encodeURIComponent(`${format};${embed};${download}`);
         }
 
         let apiUrl = '/api/mp3/downloadVideo?';
@@ -97,8 +101,8 @@ export default function AudioForm({ url, setLoading, setFileName, setTitle }: Fo
     }, [isSubmit]);
 
     const format = makeCheckboxsRaw(
-        ['.flac', '.mp3', '.wav', '[best]'],    // contents
-        ['flac', 'mp3', 'wav', '0'],            // values
+        ['.flac', '.mp3', '.wav', '.opus'],     // contents
+        ['flac', 'mp3', 'wav', 'opus'],         // values
         'format');                              // attribute
     const formatComponent = makeCheckboxes(
         format, states);
@@ -106,14 +110,14 @@ export default function AudioForm({ url, setLoading, setFileName, setTitle }: Fo
     const embed = makeCheckboxsRaw(
         ['Embeded'],
         ['embed'],
-        'thumbnail');
+        'embed');
     const embedComponent = makeDependingCheckboxes(
         embed, states, hasFormat);
 
     const download = makeCheckboxsRaw(
         ['Download'],
         ['write'],
-        'thumbnail');
+        'download');
     const downloadComponent = makeCheckboxes(
         download, states);
 
@@ -135,7 +139,7 @@ export default function AudioForm({ url, setLoading, setFileName, setTitle }: Fo
                 onClick={() => {
                     setSubmit(true);
                 }}>
-                Submit
+                Download
             </div>
         </>
     );

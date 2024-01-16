@@ -102,8 +102,8 @@ export default function VideoForm({ url, setLoading, setFileName, setTitle }: Fo
     }, [isSubmit]);
 
     const formats = makeCheckboxsRaw(
-        ['.mkv', '.mp4', '[best]'],
-        ['mkv', 'mp4', 'best'],
+        ['.mkv', '.mp4'],
+        ['mkv', 'mp4'],
         'format');
     const formatComponent = makeCheckboxes(
         formats, state);
@@ -135,7 +135,7 @@ export default function VideoForm({ url, setLoading, setFileName, setTitle }: Fo
                     onClick={() => {
                         setSubmit(true);
                     }}>
-                    Submit
+                    Download
             </div>
             
         </>

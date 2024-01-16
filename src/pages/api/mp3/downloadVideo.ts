@@ -56,7 +56,8 @@ function compressFiles(fileNames: string[], code: string): string {
     ].join(' ');
 
     execSync(zip);
-    console.log(zip);
+
+    // Need to delete non zipped files after zipping
 
     return fileName;
 }
@@ -77,38 +78,41 @@ function getArgs(isAudio: string, options: string): string {
 
 function getAudioArgs(options: string) {
 
-    const args = options.split(';');
-
-    const format = (option: string) => {
+    const addFormat = (option: string) => {
         if (option == '') return '--skip-download';
 
-        const format = option == '0' ? '--audio-quality 0' : `--audio-format ${option}`;
-        return '-x ' + format + `--add-metadata`;
-    };
-    const thumbnail = (option: string) => {
-        if (option == '') return '';
-
-        return `--${option}-thumbnail` + (option == 'embed' ? '' : ' --convert-thumbnails png');
+        const format = `-f bestaudio${option == 'opus' ? '[ext=webm]' : ''} --audio-format ${option}`;
+        return `-x ${format} --add-metadata`;
     };
 
-    return `${format(args[1])} ${thumbnail(args[3])}`;
+    const addEmbed = (option: string) => option == '' ? '' : `--${option}-thumbnail`;
+    const addDownload = (option: string) => option == '' ? '' : `--${option}-thumbnail --convert-thumbnails png`;
+
+    const getValue = (args: string[], argName: string) => {
+        const arg = args.find(arg => arg.startsWith(`${argName}:`))!;
+        return arg.split(':').pop()!;
+    }
+
+    const args = options.split(';');
+
+    const format = getValue(args, 'format');
+    const embed = getValue(args, 'embed');
+    const download = getValue(args, 'download');
+
+    return `${addFormat(format)} ${addEmbed(embed)} ${addDownload(download)}`;
 }
 
 function getVideoArgs(options: string) {
 
-    const format = (format: string) => {
-        if (format == "best") 
-            return '';
+    const format = (format: string) =>  `-f 'best[ext=${format}]'`;
 
-        return `-f 'best[ext=${format}]'`;
-    };
     const embed = (option: string) => option == 'embed' ? option : '';
     const subs = (option: string) => `--${embed(option)}-subs`;
     const chapters = (option: string) => `--${embed(option)}-chapters`;
+
     const sponsor = (option: string) => `--sponsorblock-${option == 'mark all' ? 'mark' : 'remove all'}`;
 
     const args = options.split(';');
-
     const command = `${format(args[1])} ${args[3] == '' ? '' : subs(args[3])} ${args[5] == '' ? '' : chapters(args[5])} ${args[7] == '' ? '' : sponsor(args[7])} --embed-thumbnail --add-metadata`;
     return command;
 }
