@@ -1,9 +1,11 @@
 import { useEffect, useState } from "react";
+
 import { formOptions, checkboxOptions,
     makeCheckboxsRaw, makeCheckboxes, makeDependingCheckboxes } from "./checkbox";
 
-export default function VideoForm({ url, setLoading, setFileName }: 
-    { url: string, setLoading: (options: {isLoading: boolean, message: string}) => void, setFileName: (option: string) => void }) {
+import { isBadUrl, FormArgs } from "./form";
+
+export default function VideoForm({ url, setLoading, setFileName, setTitle }: FormArgs) {
 
     const [videoOptions, setVideoOptions] = useState(() => {
         return ({
@@ -30,6 +32,11 @@ export default function VideoForm({ url, setLoading, setFileName }:
     useEffect(() => {
 
         if (!isSubmit) return;
+
+        if (isBadUrl(url)) {
+            setTitle('Invalid url (*____*! )')
+            return;
+        }
 
         const getVideoOptions = () => {
             const isAudio = '&isAudio=false';

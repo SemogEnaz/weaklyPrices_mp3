@@ -9,6 +9,45 @@ import './form.css'
 import './checkbox.css'
 import Image from 'next/image';
 
+export type FormArgs = {
+    url: string, 
+    setLoading: (options: any) => (void), 
+    setFileName: (option: string) => (void), 
+    setTitle: (option: string) => (void)
+}
+
+export function isBadUrl(url: string): boolean {
+
+    const isYtVideo = (url: string) => {
+        const urlStartDesktop = 'https://www.youtube.com/watch?v=';
+        const urlStartMoble = 'https://youtu.be/'
+        const isDomain = url.includes(urlStartDesktop) || url.includes(urlStartMoble);
+
+        const videoId = url.split('=').pop()!;
+        console.log(videoId);
+        const isIdlen = videoId.length == 11;
+
+        return isDomain && isIdlen;
+    }
+
+    const isYtPlaylist = (url: string) => {
+        const urlStart = 'https://youtube.com/playlist?list=';
+        const urlStartwww = 'https://www.youtube.com/playlist?list=';
+        return url.includes(urlStart) || url.includes(urlStartwww);
+    }
+
+    // Currently, playlists are not supported.
+    const isYtUrl = (url: string) => {
+        return isYtVideo(url) && !isYtPlaylist(url);
+    }
+
+    const clean = (url: string) => {
+        return !url.includes(';') && !url.includes(' ') && !url.includes(';');
+    }
+
+    return !isYtUrl(url) || !clean(url);
+}
+
 export default function SubmissionForm() {
 
     const [title, setTitle] = useState('');
@@ -23,33 +62,16 @@ export default function SubmissionForm() {
 
     useEffect(() => {
 
-        const isYtVideo = (url: string) => {
-            const urlStart = 'https://www.youtube.com/watch?v=';
-            const urlStartMoble = 'https://youtu.be/'
-            return url.includes(urlStart) || url.includes(urlStartMoble);
-        }
-    
-        const isYtPlaylist = (url: string) => {
-            const urlStart = 'https://youtube.com/playlist?list=';
-            const urlStartwww = 'https://www.youtube.com/playlist?list=';
-            return url.includes(urlStart) || url.includes(urlStartwww);
-        }
-    
-        const isYtUrl = (url: string) => {
-            return isYtVideo(url) || isYtPlaylist(url);
-        }
-
-        const clean = (url: string) => {
-            return !url.includes(';') && !url.includes(' ');
-        }
-
-        if (!isYtUrl(url) && !clean(url)) {
+        if (isBadUrl(url)) {
+            setTitle('');
             return;
         }
 
         fetch(`/api/mp3/getVideoTitle?url=${url}`)
-            .then(response => response.json())
-            .then(data => {
+            .then(response => {
+                if (response.ok)
+                    return response.json();
+            }).then(data => {
                 setTitle(data.title);
             })
             .catch(error => {
@@ -62,7 +84,7 @@ export default function SubmissionForm() {
 
     useEffect(() => {
 
-        if (fileName == '') return;
+        if (fileName == '' || title == '') return;
 
         const deleteContent = () => {
             fetch(`api/mp3/deleteVideo?fileName=${fileName}`);
@@ -94,7 +116,7 @@ export default function SubmissionForm() {
 
         setFileName('');
 
-    }, [fileName]);
+    }, [fileName, title]);
 
     const Title = ({ title }: {title: string}) => {
 
@@ -112,7 +134,7 @@ export default function SubmissionForm() {
 
     const Form = () => {
 
-        const placeholder = 'Paste url...'; //'https://www.youtube.com/watch?v=dQw4w9WgXcQ';
+        const placeholder = 'Paste url here...'; //'https://www.youtube.com/watch?v=dQw4w9WgXcQ';
 
         return (
 
@@ -149,8 +171,8 @@ export default function SubmissionForm() {
                 </div>
 
                 {isAudio ? 
-                <AudioForm url={url} setLoading={setLoading} setFileName={setFileName}/> :
-                <VideoForm url={url} setLoading={setLoading} setFileName={setFileName} />}
+                <AudioForm url={url} setLoading={setLoading} setFileName={setFileName} setTitle={setTitle} /> :
+                <VideoForm url={url} setLoading={setLoading} setFileName={setFileName} setTitle={setTitle} />}
 
                 <div className="flex justify-center mt-[150px] cursor-crosshair">
                     <Image

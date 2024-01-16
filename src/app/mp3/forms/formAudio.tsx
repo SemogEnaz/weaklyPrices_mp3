@@ -7,8 +7,9 @@ import {
     makeCheckboxsRaw, makeCheckboxes, makeDependingCheckboxes 
 } from "./checkbox";
 
-export default function AudioForm({ url, setLoading, setFileName }: 
-    { url: string, setLoading: (options: any) => (void), setFileName: (option: string) => (void) }) {
+import { isBadUrl, FormArgs } from './form';
+
+export default function AudioForm({ url, setLoading, setFileName, setTitle }: FormArgs) {
 
     const [audioOptions, setAudioOptions] = useState(() => {
         return ({
@@ -30,7 +31,12 @@ export default function AudioForm({ url, setLoading, setFileName }:
 
     useEffect(() => {
 
-        if(!isSubmit) return;
+        if (!isSubmit) return;
+
+        if (isBadUrl(url)) {
+            setTitle('Invalid url (-____- )')
+            return;
+        }
 
         const getAudioParam = () => {
             const isAudio = '&isAudio=true';
