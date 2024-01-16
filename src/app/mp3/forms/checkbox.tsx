@@ -71,14 +71,13 @@ export function makeDependingCheckboxes(
     return (
         <>
             {checkboxes.map((element) => (
-                    <Checkbox
-                        key={element.content}
-                        content={element.content}
-                        isChecked={state.options[element.attribute] == element.value}
-                        hasFormat={trigger}
-                        handleClick={() => handleClick(element)} />
-                )
-            )}
+                <Checkbox
+                    key={element.content}
+                    content={element.content}
+                    isChecked={state.options[element.attribute] == element.value}
+                    hasFormat={trigger}
+                    handleClick={() => handleClick(element)} />
+            ))}
         </>
     );
 };

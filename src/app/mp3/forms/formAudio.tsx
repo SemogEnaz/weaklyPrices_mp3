@@ -1,11 +1,14 @@
 "useClient"
 
 import { useEffect, useState } from 'react';
-import { formOptions, checkboxOptions,
-    makeCheckboxsRaw, makeCheckboxes, makeDependingCheckboxes } from "./checkbox";
-import LoadingForm from './formLoading';
 
-export default function AudioForm({ url, title }: { url: string, title: string }) {
+import { 
+    formOptions, checkboxOptions,
+    makeCheckboxsRaw, makeCheckboxes, makeDependingCheckboxes 
+} from "./checkbox";
+
+export default function AudioForm({ url, setLoading, setFileName }: 
+    { url: string, setLoading: (options: any) => (void), setFileName: (option: string) => (void) }) {
 
     const [audioOptions, setAudioOptions] = useState(() => {
         return ({
@@ -20,16 +23,9 @@ export default function AudioForm({ url, title }: { url: string, title: string }
 
     const [hasFormat, setHasFormat] = useState(false);
     const [isSubmit, setSubmit] = useState(false);
-    const [fileName, setFileName] = useState('');
-    const [loadingProps, setLoading] = useState(() => ({
-        isLoading: false,
-        message: ''
-    }));
 
     useEffect(() => {
-
         setHasFormat(audioOptions['format'] != '');
-
     }, [audioOptions['format'], hasFormat]);
 
     useEffect(() => {
@@ -64,11 +60,6 @@ export default function AudioForm({ url, title }: { url: string, title: string }
                 setFileName(data.fileName);
             } catch (error) {
                 console.error('Fetch error: ', error);
-            } finally {
-                setLoading({
-                    isLoading: false,
-                    message: ''
-                });
             }
         };
     
@@ -76,46 +67,6 @@ export default function AudioForm({ url, title }: { url: string, title: string }
         setSubmit(false);
 
     }, [isSubmit]);
-
-    useEffect(() => {
-
-        if (fileName == '') return;
-
-        const deleteContent = () => {
-            fetch(`api/mp3/deleteVideo?fileName=${fileName}`);
-        };
-    
-        const downloadContent = () => {
-    
-            setLoading(prev => ({
-                isLoading: true,
-                message: 'Generating Link'
-            }));
-
-            const fileLink = `/mp3/downloads/${fileName}`;
-        
-            const a = document.createElement('a');
-            a.href = fileLink;
-            a.download = title + '.' + fileName.split('.').pop();
-    
-            document.body.appendChild(a);
-            a.click();
-            a.remove();
-
-            setLoading(prev => ({
-                isLoading: false,
-                message: ''
-            }));
-        
-            setTimeout(() => {
-                deleteContent();
-            }, 10 * 60000);
-        };
-
-        downloadContent();
-        setFileName('');
-
-    }, [fileName]);
 
     const format = makeCheckboxsRaw(
         ['.flac', '.mp3', '.wav', '[best]'],    // contents
@@ -138,9 +89,6 @@ export default function AudioForm({ url, title }: { url: string, title: string }
     const downloadComponent = makeCheckboxes(
         download, states);
 
-    if (loadingProps.isLoading)
-        return <LoadingForm message={loadingProps.message}/>
-
     return (
         <>
             {formOptions(
@@ -157,7 +105,7 @@ export default function AudioForm({ url, title }: { url: string, title: string }
             <div
                 className='submition-button' 
                 onClick={() => {
-                    //setSubmit(true);
+                    setSubmit(true);
                 }}>
                 Submit
             </div>

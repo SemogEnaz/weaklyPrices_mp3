@@ -15,30 +15,10 @@ export default function SubmissionForm() {
     const [isAudio, setAudio] = useState(true);
     const [isRevealed, setRevealed] = useState(false);
     const [url, setUrl] = useState('');
-    const [isSubmit, setSubmit] = useState(false);
     const [loadingData, setLoading] = useState(() => ({
         isLoading: false,
         message: ''
     }));
-    const [audioOptions, setAudioOptions] = useState(() => {
-        return ({
-            'format': '',
-            'thumbnail': ''
-        });
-    });
-    const audioStates = {
-        options: audioOptions,
-        setOptions: setAudioOptions
-    }
-    const [videoOptions, setVideoOptions] = useState(() => {
-        return ({
-            'format': '',
-            'thumbnail': '',    // embed, download
-            'subtitles': '',    // embed, none
-            'chapters': '',     // write, none
-            'sponsor': '',      // mark, remove
-        })
-    })
     const [fileName, setFileName] = useState('');
 
     useEffect(() => {
@@ -82,65 +62,6 @@ export default function SubmissionForm() {
 
     useEffect(() => {
 
-        if(!isSubmit) return;
-
-        const getAudioOptions = () => {
-            const isAudio = '&isAudio=true';
-            const fileType = 'format;' + audioOptions['format'];
-            const thumbnail = 'thumbnail;' + audioOptions['thumbnail'];
-    
-            return isAudio + '&options=' + encodeURIComponent(fileType + ';' + thumbnail);
-        }
-
-        const getVideoOptions = () => {
-            const isAudio = '&isAudio=false';
-            const fileType = 'format;' + videoOptions['format'];
-            const subtitles = 'subtitles;' + videoOptions['subtitles'];
-            const chapters = 'chapters;' + videoOptions['chapters'];
-            const sponsor = 'sponsor;' + videoOptions['sponsor'];
-
-            return isAudio + '&options=' + encodeURIComponent(
-                fileType + ';' + subtitles + ';' + chapters + ';' + sponsor
-            );
-        }
-
-        let apiUrl = '/api/mp3/downloadVideo?';
-        apiUrl += `url=${encodeURIComponent(url)}`;
-
-        let apiParam = isAudio ? getAudioOptions() : getVideoOptions();
-        apiUrl += apiParam;
-
-        const fetchData = async () => {
-
-            setLoading({
-                isLoading: true,
-                message: 'Downloading Video'
-            });
-
-            try {
-                const response = await fetch(apiUrl);
-                const data = await response.json();
-
-                setFileName(data.fileName);
-            } catch (error) {
-                console.error('Fetch error: ', error);
-            } finally {
-                setLoading({
-                    isLoading: false,
-                    message: ''
-                });
-            }
-        };
-    
-        fetchData();
-    
-        setSubmit(false);
-
-    }, [isSubmit]);
-
-
-    useEffect(() => {
-
         if (fileName == '') return;
 
         const deleteContent = () => {
@@ -148,11 +69,6 @@ export default function SubmissionForm() {
         };
     
         const downloadContent = () => {
-    
-            setLoading(prev => ({
-                isLoading: true,
-                message: 'Generating Link'
-            }));
 
             const fileLink = `/mp3/downloads/${fileName}`;
         
@@ -163,11 +79,6 @@ export default function SubmissionForm() {
             document.body.appendChild(a);
             a.click();
             a.remove();
-
-            setLoading(prev => ({
-                isLoading: false,
-                message: ''
-            }));
         
             setTimeout(() => {
                 deleteContent();
@@ -175,11 +86,17 @@ export default function SubmissionForm() {
         };
 
         downloadContent();
+
+        setLoading({
+            isLoading: false,
+            message: ''
+        });
+
         setFileName('');
 
     }, [fileName]);
 
-    const Title = ({ title }) => {
+    const Title = ({ title }: {title: string}) => {
 
         if (title == '')
             return (
@@ -195,7 +112,7 @@ export default function SubmissionForm() {
 
     const Form = () => {
 
-        const placeholder = 'https://www.youtube.com/watch?v=dQw4w9WgXcQ';
+        const placeholder = 'Paste url...'; //'https://www.youtube.com/watch?v=dQw4w9WgXcQ';
 
         return (
 
@@ -205,7 +122,7 @@ export default function SubmissionForm() {
 
                 <div className="flex items-center bg-blue-900 rounded-md p-3 drop-shadow-2xl mb-[30px]">
                     <div className="text-xl text-white">url:</div>
-                    <input 
+                    <input
                         type="text"
                         value={url}
                         placeholder={placeholder}
@@ -223,7 +140,7 @@ export default function SubmissionForm() {
                             setAudio(true);
                         }}>Audio</div>
 
-                    <div 
+                    <div
                         className={`content-type-button ${isAudio ? '' : 'show-button'}`}
                         onClick={() => {
                             setAudio(false);
@@ -232,8 +149,8 @@ export default function SubmissionForm() {
                 </div>
 
                 {isAudio ? 
-                <AudioForm url={url} title={title} /> :
-                <VideoForm url={url} title={title} />}
+                <AudioForm url={url} setLoading={setLoading} setFileName={setFileName}/> :
+                <VideoForm url={url} setLoading={setLoading} setFileName={setFileName} />}
 
                 <div className="flex justify-center mt-[150px] cursor-crosshair">
                     <Image
@@ -246,7 +163,8 @@ export default function SubmissionForm() {
         );
     };
 
-    if (loadingData.isLoading) return <LoadingForm message={loadingData.message}/>
+    if (loadingData.isLoading)
+        return <LoadingForm message={loadingData.message}/>
 
     return  <Form /> ;
 }
