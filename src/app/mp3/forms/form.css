@@ -120,7 +120,7 @@ html {
 
 input::placeholder {
     color: rgb(0 0 90);
-    opacity: 0.25;
+    opacity: 0.5;
 }
 
 input[type="text"]:focus {
