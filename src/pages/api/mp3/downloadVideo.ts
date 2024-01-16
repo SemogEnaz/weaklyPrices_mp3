@@ -38,9 +38,25 @@ function compressFiles(fileNames: string[], code: string): string {
 
     if (fileNames.length == 1) return fileNames.pop()!;
 
+    const public_dir = './public/mp3/downloads/';
+    const otherArgs = [
+        '-1',   // Faster zip
+        '-j',   // Don't include the directory structure, just files
+    ]
+
     const fileName = `${code}.zip`;
-    const zip = ['zip', fileName, ...fileNames].join(' ');
+
+    const zip = [
+        'zip',
+        ...otherArgs,
+        public_dir + fileName, 
+        ...fileNames.map(
+            fileName => `${public_dir}${fileName}`
+        )
+    ].join(' ');
+
     execSync(zip);
+    console.log(zip);
 
     return fileName;
 }
@@ -84,7 +100,7 @@ function getVideoArgs(options: string) {
         if (format == "best") 
             return '';
 
-        return `-f 'bestvideo[ext=${format}]+bestaudio[ext=${format}]/best'`;
+        return `-f 'best[ext=${format}]'`;
     };
     const embed = (option: string) => option == 'embed' ? option : '';
     const subs = (option: string) => `--${embed(option)}-subs`;

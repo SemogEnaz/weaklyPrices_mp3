@@ -25,16 +25,38 @@ export default function AudioForm({ url, setLoading, setFileName, setTitle }: Fo
     const [hasFormat, setHasFormat] = useState(false);
     const [isSubmit, setSubmit] = useState(false);
 
+    // Blocking the depending checkboxes & reseting
+    // the blocked depending checkbox values
     useEffect(() => {
+        const resetOption = (attribute: string) => {
+            setAudioOptions(prev => ({
+                ...prev,
+                [attribute]: ''
+            }));
+        }
+
         setHasFormat(audioOptions['format'] != '');
+        
+        resetOption('thumbnail');
+        
     }, [audioOptions['format'], hasFormat]);
 
+    // Submition effect, calling the backend to download content
     useEffect(() => {
 
         if (!isSubmit) return;
 
         if (isBadUrl(url)) {
             setTitle('Invalid url (-____- )')
+            return;
+        }
+
+        const isFormat = audioOptions['format'] != '';
+        const isEmbed = audioOptions['thumbnail'] == 'embed';
+        //const isDownload = audioOptions['thumbnail'] == 'write';
+
+        if (!isFormat && !isEmbed) {
+            setTitle('Invalid options (0____0 )');
             return;
         }
 

@@ -24,10 +24,10 @@ export function isBadUrl(url: string): boolean {
         const isDomain = url.includes(urlStartDesktop) || url.includes(urlStartMoble);
 
         const videoId = url.split('=').pop()!;
-        console.log(videoId);
-        const isIdlen = videoId.length == 11;
+        const isIdLen = videoId.length == 11;
+        const isIdLenMobile = videoId.length == 16;
 
-        return isDomain && isIdlen;
+        return isDomain && (isIdLen || isIdLenMobile);
     }
 
     const isYtPlaylist = (url: string) => {

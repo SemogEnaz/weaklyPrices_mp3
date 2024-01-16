@@ -26,15 +26,34 @@ export default function VideoForm({ url, setLoading, setFileName, setTitle }: Fo
     const [isSubmit, setSubmit] = useState(false);
 
     useEffect(() => {
+        const resetOption = (attribute: string) => {
+            setVideoOptions(prev => ({
+                ...prev,
+                [attribute]: ''
+            }));
+        }
+
         setHasFormat(videoOptions['format'] != '');
+
+        // Reseting depending attributes
+        resetOption('subtitles');
+        resetOption('chapters');
+        resetOption('sponsor');
+
     }, [videoOptions['format'], hasFormat]);
 
+    // calling the download api from backend
     useEffect(() => {
 
         if (!isSubmit) return;
 
         if (isBadUrl(url)) {
             setTitle('Invalid url (*____*! )')
+            return;
+        }
+
+        if (videoOptions['format'] == '') {
+            setTitle('Invalid Options (X ____ X )')
             return;
         }
 
@@ -69,6 +88,10 @@ export default function VideoForm({ url, setLoading, setFileName, setTitle }: Fo
 
                 setFileName(data.fileName);
             } catch (error) {
+                setLoading({
+                    isLoading: true,
+                    message: error
+                })
                 console.error('Fetch error: ', error);
             }
         };
