@@ -1,5 +1,5 @@
 .storm {
-    animation: flash 20s infinite linear;
+    animation: flash 10s infinite linear;
 }
 
 .sky, .storm {
@@ -28,18 +28,18 @@
 
 .lightning-strike.left {
     left: 5vw;
-    animation: flash-s 40s infinite linear;
+    animation: flash-s 20s infinite linear;
 }
 
 .lightning-strike.middle {
     left: 50vw;
     transform: translateX(-50%);
-    animation: flash-m 20s infinite linear;
+    animation: flash-m 10s infinite linear;
 }
 
 .lightning-strike.right {
     right: 5vw;
-    animation: flash-s 40s 20s infinite linear;
+    animation: flash-s 20s 10s infinite linear;
 }
 
 @keyframes flash-s {
