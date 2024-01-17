@@ -40,7 +40,8 @@ function compressFiles(fileNames: string[], code: string): string {
 
     const public_dir = './public/mp3/downloads/';
     const otherArgs = [
-        '-1',   // Faster zip
+        //'-1',   // Faster zip
+        '-9',
         '-j',   // Don't include the directory structure, just files
     ]
 

@@ -1,3 +1,4 @@
+import sys
 import csv
 import os
 import time
@@ -419,5 +420,16 @@ def get_woolworths_catalogue():
 
     driver.quit()
 
-get_coles_catalogue()
-get_woolworths_catalogue()
+print(sys.argv)
+isBoth = len(sys.argv) == 1
+isColes = False
+isWoolies = False
+
+if not isBoth:
+    if sys.argv[1] == 'c': isColes = True
+    if sys.argv[1] == 'w': isWoolies = True
+
+if isBoth or isColes:
+    get_coles_catalogue()
+if isBoth or isWoolies:
+    get_woolworths_catalogue()

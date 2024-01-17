@@ -1,8 +1,12 @@
 # See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
 
+# mp3 downloads folder
+public/mp3/downloads/*
+
 # things from scripts
 __pycache__/
 *.csv
+credentials.txt
 
 # dependencies
 /node_modules
