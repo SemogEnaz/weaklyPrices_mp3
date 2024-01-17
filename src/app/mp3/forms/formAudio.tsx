@@ -36,10 +36,9 @@ export default function AudioForm({ url, setLoading, setFileName, setTitle }: Fo
                 [attribute]: ''
             }));
         }
-
         setHasFormat(audioOptions['format'] != '');
         
-        resetOption('thumbnail');
+        if (audioOptions['format'] == '') resetOption('embed');
     }, [audioOptions['format'], hasFormat]);
 
     // Submition effect, calling the backend to download content

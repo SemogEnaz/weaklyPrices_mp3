@@ -36,9 +36,11 @@ export default function VideoForm({ url, setLoading, setFileName, setTitle }: Fo
         setHasFormat(videoOptions['format'] != '');
 
         // Reseting depending attributes
-        resetOption('subtitles');
-        resetOption('chapters');
-        resetOption('sponsor');
+        if (videoOptions['format'] == '') {
+            resetOption('subtitles');
+            resetOption('chapters');
+            resetOption('sponsor');
+        }
 
     }, [videoOptions['format'], hasFormat]);
 
