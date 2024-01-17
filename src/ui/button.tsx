@@ -1,6 +1,6 @@
 import Link from 'next/link';
 
-import '@/ui/button.css'
+import './button.css'
 
 export function TopButton({ link, text }) {
     return (
